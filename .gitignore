@@ -1,0 +1,12 @@
+*.meta
+/Animations/
+/Fonts/
+/Materials/
+/Plugins/
+/Prefabs/
+/Resources/
+/Scenes/
+/Settings/
+/Sprites/
+/Tiles/
+/UI Toolkit/

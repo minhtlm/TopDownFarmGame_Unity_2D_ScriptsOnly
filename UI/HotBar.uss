@@ -1,0 +1,14 @@
+.shortcut-key {
+    font-size: 16px;
+    color: white;
+    -unity-font-style: bold;
+    text-shadow: 1px 1px 2px black;
+}
+
+.quantity {
+    font-size: 25px;
+    color: white;
+    -unity-text-outline-width: 0.5px;
+    -unity-text-outline-color: white;
+    text-shadow: 1px 1px 2px black;
+}
