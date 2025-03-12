@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
 {
     private float speed = 5.0f;
     private bool isAxing = false;
-    private bool chopOneTree;
     private Rigidbody2D rigidbody2d;
     private Vector2 moveInput;
     private Vector2 lookDirection;
@@ -20,6 +19,11 @@ public class PlayerController : MonoBehaviour
     public Animator hairAnimator;
     public Animator toolAnimator;
     public InputAction moveAction;
+
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -74,17 +78,9 @@ public class PlayerController : MonoBehaviour
     // Shake the tree by Animation event
     void ShakeTree()
     {
-        if (tree != null && tree.isCut == false && chopOneTree)
+        if (tree != null && !tree.isCut)
         {
-            tree.transform.DOShakePosition(0.5f, 0.2f);
-            tree.leavesHitEffect.GetComponent<Animator>().SetTrigger("LeavesHitTrigger");
-            if (tree.health <= 0)   // Destroy the tree and use woodParticles if health is 0
-            {
-                tree.isCut = true;
-                tree.GetComponent<SpriteRenderer>().sprite = tree.stumpSprite;
-                tree.SpawnWoodParticles();
-                Invoke("DestroyTree", 2.0f);
-            }
+            tree.ShakeTree();
         } else
         {
             Debug.Log("Tree is null to shake");
@@ -105,16 +101,14 @@ public class PlayerController : MonoBehaviour
         Collider2D hit = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f), new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask("Tree"));
         if (hit != null)
         {
-            chopOneTree = true;
             tree = hit.GetComponent<TreeController>();
-            if (tree != null && tree.isCut == false)
+            if (tree != null && !tree.isCut)
             {
                 tree.HitTree();
                 Debug.Log("Tree found! Health: " + tree.health);
             }
-        } else
-        {
-            chopOneTree = false;
+        } else {
+            tree = null;
         }
     }
 
@@ -140,10 +134,5 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger(trigger);
         }
-    }
-
-    void DestroyTree()
-    {
-        Destroy(tree.gameObject);
     }
 }

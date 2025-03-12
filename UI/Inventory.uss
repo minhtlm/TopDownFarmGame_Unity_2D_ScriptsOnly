@@ -1,0 +1,84 @@
+.slot-hotBar {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/ItemBox_32x32.png?fileID=21300000&guid=28fc68f3fc83d65458c2f19af946ea03&type=3#ItemBox_32x32");
+    -unity-background-scale-mode: scale-to-fit;
+    width: 64px;
+    height: 64px;
+    margin: 4px 4px 12px 4px;
+}
+
+.slot-inventory {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/ItemBox_32x32.png?fileID=21300000&guid=28fc68f3fc83d65458c2f19af946ea03&type=3#ItemBox_32x32");
+    -unity-background-scale-mode: scale-to-fit;
+    width: 64px;
+    height: 64px;
+    margin: 4px;
+}
+
+.grid {
+    flex-grow: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 0 16px 16px 16px;
+}
+
+.icon {
+    flex-grow: 1;
+    transition: all 0.1s ease-out;
+}
+
+.icon:hover {
+    scale: 1.1;
+}
+
+.label {
+    margin: 0 4px 0 4px;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    -unity-font-definition: initial;
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    text-shadow: 1px 1px 2px rgb(0, 0, 0);
+    -unity-font-style: normal;
+    height: 16px;
+    width: 64px;
+    -unity-text-align: middle-center;
+}
+
+.quantity {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    align-self: flex-end;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    -unity-font-style: bold;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 2px rgb(0, 0, 0);
+    bottom: 0;
+}
+
+.item-highlight {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/item-highlight.png");
+}
+
+.dragged-item {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+}
+
+.dragged-icon {
+    width: 64px;
+    height: 64px;
+    transition: all 0.1s;
+    scale: 1.1;
+}

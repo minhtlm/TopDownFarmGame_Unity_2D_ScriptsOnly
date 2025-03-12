@@ -1,0 +1,165 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Inventory.uss?fileID=7433441132597879392&amp;guid=9db70e4bce0dadf44872a1c743487830&amp;type=3#Inventory" />
+    <ui:VisualElement name="InventoryContainer" style="flex-grow: 0; align-items: center; justify-content: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 25px; padding-right: 25px; padding-bottom: 25px; padding-left: 25px; width: 960px; height: 324px; align-self: auto; position: absolute; flex-wrap: nowrap; left: 50%; top: 50%; bottom: auto; translate: -50% -50%; background-image: url(&quot;project://database/Assets/Sprites/UI/UIInventory/InventoryContainer_960x324.png?fileID=21300000&amp;guid=c440654669156cf47bcb9b58d7de30c2&amp;type=3#InventoryContainer_960x324&quot;); -unity-background-scale-mode: scale-to-fit;">
+        <ui:VisualElement name="Header" style="flex-grow: 1; height: 16px; flex-direction: row; flex-wrap: nowrap; align-items: auto; padding-right: 16px; padding-left: 16px; width: 100%;">
+            <ui:Label tabindex="-1" text="1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_1" class="label" />
+            <ui:Label tabindex="-1" text="2" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_2" class="label" />
+            <ui:Label tabindex="-1" text="3" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_3" class="label" />
+            <ui:Label tabindex="-1" text="4" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_4" class="label" />
+            <ui:Label tabindex="-1" text="5" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_5" class="label" />
+            <ui:Label tabindex="-1" text="6" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_6" class="label" />
+            <ui:Label tabindex="-1" text="7" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_7" class="label" />
+            <ui:Label tabindex="-1" text="8" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_8" class="label" />
+            <ui:Label tabindex="-1" text="9" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_9" class="label" />
+            <ui:Label tabindex="-1" text="0" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_0" class="label" />
+            <ui:Label tabindex="-1" text="-" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_minus" class="label" />
+            <ui:Label tabindex="-1" text="=" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label_equal" class="label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Grid" class="grid" style="flex-direction: row; flex-wrap: wrap; align-items: flex-start;">
+            <ui:VisualElement name="Slot_1" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_2" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_3" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_4" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_5" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_6" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_7" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_8" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_9" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_0" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_minus" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot_equal" class="slot-hotBar">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Slot" class="slot-inventory">
+                <ui:VisualElement name="Icon" class="icon" />
+                <ui:Label tabindex="-1" text="99" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Quantity" class="quantity" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
