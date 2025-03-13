@@ -15,14 +15,36 @@ public class PlayerController : MonoBehaviour
     private HairController hairController;
     private ToolController toolController;
     private TreeController tree;
+    [SerializeField] private UIInventoryManager inventoryManager;
+    [SerializeField] private InputAction moveAction;
+    [SerializeField] private InputAction ToggleInventoryAction;
+    [SerializeField] private InputAction ChoppingAction;
 
     public Animator hairAnimator;
     public Animator toolAnimator;
-    public InputAction moveAction;
+
 
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
+    }
+
+    void OnEnable()
+    {
+        ToggleInventoryAction.Enable();
+        ChoppingAction.Enable();
+
+        ToggleInventoryAction.performed += OnToggleInventoryPerformed;
+        ChoppingAction.performed += ChopTree;
+    }
+
+    void OnDisable()
+    {
+        ToggleInventoryAction.performed -= OnToggleInventoryPerformed;
+        ChoppingAction.performed -= ChopTree;
+
+        ToggleInventoryAction.Disable();
+        ChoppingAction.Disable();
     }
 
     // Start is called before the first frame update
@@ -35,7 +57,10 @@ public class PlayerController : MonoBehaviour
         hairController.ChangeHairStyle("curlyhair_idle_strip9_0");
         toolController.ChangeTool("tools_idle_strip9_0");
         moveAction.Enable();
-        
+        if (inventoryManager == null)
+        {
+            inventoryManager = FindObjectOfType<UIInventoryManager>();
+        }
     }
 
     // Update is called once per frame
@@ -52,13 +77,6 @@ public class PlayerController : MonoBehaviour
             Set_Look(new Animator[] { animator, hairAnimator, toolAnimator });
             Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
 
-
-            // Chopping a tree
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                Axing();
-                ChopTree();
-            }
         }
     }
 
@@ -87,17 +105,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Axing()
+    void ChopTree(InputAction.CallbackContext context)
     {
+        // Axe animation
         moveInput = Vector2.zero;
         Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
         toolController.ChangeTool("tools_axe_strip10_0");
         Set_Trigger(new Animator[] { animator, hairAnimator, toolAnimator }, "AxeTrigger");
         isAxing = true;
-    }
 
-    void ChopTree()
-    {
         Collider2D hit = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f), new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask("Tree"));
         if (hit != null)
         {
@@ -109,6 +125,17 @@ public class PlayerController : MonoBehaviour
             }
         } else {
             tree = null;
+        }
+    }
+
+    void OnToggleInventoryPerformed(InputAction.CallbackContext context)
+    {
+        if (inventoryManager != null)
+        {
+            inventoryManager.ToggleInventory();
+        } else
+        {
+            Debug.Log("InventoryManager is null");
         }
     }
 

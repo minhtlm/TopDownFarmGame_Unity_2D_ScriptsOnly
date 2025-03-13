@@ -107,7 +107,6 @@ public class PlayerInventory : MonoBehaviour
 
     public void SwapItems(int sourceIndex, int targetIndex)
     {
-        Debug.Log("Swapping started");
         List<ItemStack> playerItems = GetItems();
 
         // If the target index is within the inventory
@@ -152,6 +151,5 @@ public class PlayerInventory : MonoBehaviour
         }
 
         OnInventoryChanged?.Invoke();
-        Debug.Log("Swapping finished");
     }
 }

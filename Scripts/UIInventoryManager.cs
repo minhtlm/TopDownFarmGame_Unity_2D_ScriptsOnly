@@ -9,6 +9,7 @@ public class UIInventoryManager : MonoBehaviour
 {
     private bool isDragging = false;
     private bool isHovering = false;
+    private bool isInventoryVisible = false;
     private Vector2 pointerDownPosition;
     private Coroutine hoverCoroutine;
     private float hoverDelay = 0.5f;
@@ -20,6 +21,7 @@ public class UIInventoryManager : MonoBehaviour
     private UIDocument uiDocument;
     private List<VisualElement> slots = new List<VisualElement>();
     [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private UIHotBarManager hotBarManager;
 
 
     // Start is called before the first frame update
@@ -27,8 +29,8 @@ public class UIInventoryManager : MonoBehaviour
     {
         uiDocument = GetComponent<UIDocument>();
         VisualElement root = uiDocument.rootVisualElement;
-
         VisualElement inventoryGrid = root.Q<VisualElement>("Grid");
+        HideInventory();
 
         foreach (VisualElement slot in inventoryGrid.Children())
         {
@@ -275,5 +277,39 @@ public class UIInventoryManager : MonoBehaviour
         Debug.Log($"Selected: {item.itemDefinition.itemName} x{item.quantity}");
 
         hoverCoroutine = null;
+    }
+
+    void ShowInventory()
+    {
+        uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+        isInventoryVisible = true;
+    }
+
+    void HideInventory()
+    {
+        uiDocument.rootVisualElement.style.display = DisplayStyle.None;
+        isInventoryVisible = false;
+    }
+
+    public void ToggleInventory()
+    {
+        if (isInventoryVisible)
+        {
+            HideInventory();
+
+            if (hotBarManager != null)
+            {
+                hotBarManager.Show();
+            }
+        }
+        else
+        {
+            ShowInventory();
+            
+            if (hotBarManager != null)
+            {
+                hotBarManager.Hide();
+            }
+        }
     }
 }
