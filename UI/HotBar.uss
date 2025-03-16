@@ -21,7 +21,7 @@
     margin: 0;
     padding: 0;
     top: 40px;
-    left: 40px;
+    left: 45px;
     font-size: 25px;
     color: white;
     text-shadow: 1px 1px 2px rgb(0, 0, 0);
@@ -34,8 +34,8 @@
     flex-grow: 0;
     -unity-background-scale-mode: scale-to-fit;
     position: relative;
-    width: 50%;
-    height: 50%;
+    width: 70%;
+    height: 70%;
     align-items: center;
     justify-content: center;
     align-self: center;
@@ -51,6 +51,12 @@
     margin: 5px;
     align-items: center;
     justify-content: center;
+}
+
+.selected-slot {
+    border-width: 3px;
+    border-color: rgb(212, 56, 36);
+    border-radius: 3px;
 }
 
 .hotbar-container {

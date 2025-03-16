@@ -42,6 +42,11 @@ public class PlayerInventory : MonoBehaviour
         return items;
     }
 
+    public ItemStack GetItem(int index)
+    {
+        return items[index];
+    }
+
     public bool AddItem(ItemDefinition itemToAdd, int amount)
     {
         if (itemToAdd == null) return false;

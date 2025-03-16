@@ -7,9 +7,11 @@ public class UIHotBarManager : MonoBehaviour
 {
     private UIDocument uiDocument;
     private VisualElement root;
-    private List<VisualElement> hotBarSlots = new List<VisualElement>();
     private PlayerInventory playerInventory;
     private bool isVisible = true;
+    private int initialSelectedSlotIndex = 0;
+
+    public List<VisualElement> hotBarSlots = new List<VisualElement>();
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +42,7 @@ public class UIHotBarManager : MonoBehaviour
                 return;
             }
         }
+        SetSelectedSlot(initialSelectedSlotIndex);
 
         playerInventory.OnInventoryChanged += UpdateHotBarUI;
 
@@ -113,5 +116,18 @@ public class UIHotBarManager : MonoBehaviour
         isVisible = true;
         root.style.display = DisplayStyle.Flex;
         UpdateHotBarUI();
+    }
+
+    public void SetSelectedSlot(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= hotBarSlots.Count) return;
+
+        foreach (VisualElement slot in hotBarSlots)
+        {
+            slot.Q<VisualElement>("Item").RemoveFromClassList("selected-slot");
+        }
+
+        // Highlight selected slot
+        hotBarSlots[slotIndex].Q<VisualElement>("Item").AddToClassList("selected-slot");
     }
 }

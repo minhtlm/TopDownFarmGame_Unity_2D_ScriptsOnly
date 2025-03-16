@@ -6,19 +6,27 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
+    private int selectedHotbarSlot = 0;
     private float speed = 5.0f;
-    private bool isAxing = false;
+    private bool isUsingTool = false;
     private Rigidbody2D rigidbody2d;
     private Vector2 moveInput;
     private Vector2 lookDirection;
     private Animator animator;
-    private HairController hairController;
-    private ToolController toolController;
     private TreeController tree;
+    private IDestructible currentInteractable;
+    private ItemStack currentItem = null;
+    private PlayerInventory playerInventory;
+    [SerializeField] private ShopHouseController shopHouseController;
     [SerializeField] private UIInventoryManager inventoryManager;
+    [SerializeField] private UIHotBarManager hotBarManager;
+
+    // Input actions
     [SerializeField] private InputAction moveAction;
-    [SerializeField] private InputAction ToggleInventoryAction;
-    [SerializeField] private InputAction ChoppingAction;
+    [SerializeField] private InputAction ToggleInventoryAction; // Key: tab
+    [SerializeField] private InputAction UseToolAction; // Key: F
+    [SerializeField] private InputAction InteractAction; // Key: E
+    [SerializeField] private InputAction hotKeyAction; // Key: 1-9, 0, -, =
 
     public Animator hairAnimator;
     public Animator toolAnimator;
@@ -32,19 +40,27 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         ToggleInventoryAction.Enable();
-        ChoppingAction.Enable();
+        UseToolAction.Enable();
+        InteractAction.Enable();
+        hotKeyAction.Enable();
 
         ToggleInventoryAction.performed += OnToggleInventoryPerformed;
-        ChoppingAction.performed += ChopTree;
+        UseToolAction.performed += (UseTool);
+        InteractAction.performed += (OnInteraction);
+        hotKeyAction.performed += OnHotkeyPerformed;
     }
 
     void OnDisable()
     {
         ToggleInventoryAction.performed -= OnToggleInventoryPerformed;
-        ChoppingAction.performed -= ChopTree;
+        UseToolAction.performed -= (UseTool);
+        InteractAction.performed -= (OnInteraction);
+        hotKeyAction.performed -= OnHotkeyPerformed;
 
         ToggleInventoryAction.Disable();
-        ChoppingAction.Disable();
+        UseToolAction.Disable();
+        InteractAction.Disable();
+        hotKeyAction.Disable();
     }
 
     // Start is called before the first frame update
@@ -52,21 +68,21 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        hairController = GetComponentInChildren<HairController>();
-        toolController = GetComponentInChildren<ToolController>();
-        hairController.ChangeHairStyle("curlyhair_idle_strip9_0");
-        toolController.ChangeTool("tools_idle_strip9_0");
         moveAction.Enable();
         if (inventoryManager == null)
         {
             inventoryManager = FindObjectOfType<UIInventoryManager>();
+        }
+        if (hotBarManager == null)
+        {
+            hotBarManager = FindObjectOfType<UIHotBarManager>();
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isAxing)
+        if (!isUsingTool)
         {
             moveInput = moveAction.ReadValue<Vector2>();
             if (!Mathf.Approximately(moveInput.x, 0.0f))
@@ -87,44 +103,86 @@ public class PlayerController : MonoBehaviour
     }
 
     // Animation event
-    void OnAxeComplete()
+    void OnToolUseComplete()
     {
-        isAxing = false;
+        isUsingTool = false;
         speed = 5.0f;
     }
 
     // Shake the tree by Animation event
-    void ShakeTree()
+    void OnInteractAnimation()
     {
-        if (tree != null && !tree.isCut)
+        if (currentInteractable != null && currentInteractable.CanInteract(currentItem.itemDefinition.itemName))
         {
-            tree.ShakeTree();
-        } else
+            currentInteractable.OnInteractAnimation();
+        }
+        else
         {
-            Debug.Log("Tree is null to shake");
+            Debug.Log("No interactable object found: ");
         }
     }
 
-    void ChopTree(InputAction.CallbackContext context)
+    void OnInteraction(InputAction.CallbackContext context)
     {
-        // Axe animation
+        shopHouseController = ShopHouseController.Instance;
+        if (shopHouseController != null)
+        {
+            Debug.Log("Interacting with shop house");
+            shopHouseController.EnterShopHouse(gameObject);
+        }
+    }   
+
+    void UseTool(InputAction.CallbackContext context)
+    {
+        // Check if the selected hotbar slot has the correct tool type
+        if (playerInventory == null)
+        {
+            playerInventory = PlayerInventory.Instance;
+        }
+        if (playerInventory == null)
+        {
+            Debug.LogError("PlayerInventory not found");
+            return;
+        }
+        if (selectedHotbarSlot >= 0 && selectedHotbarSlot < playerInventory.GetItems().Count)
+        {
+            ItemStack item = playerInventory.GetItem(selectedHotbarSlot);
+            if (item == null)
+            {
+                Debug.Log("No item in the selected hotbar slot");
+                return;
+            }
+            else 
+            {
+                currentItem = item;
+            }
+        }
+
+        // Stop movement during tool use
         moveInput = Vector2.zero;
         Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
-        toolController.ChangeTool("tools_axe_strip10_0");
-        Set_Trigger(new Animator[] { animator, hairAnimator, toolAnimator }, "AxeTrigger");
-        isAxing = true;
 
-        Collider2D hit = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f), new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask("Tree"));
+        // Set the tool animation
+        string animTrigger = currentItem.itemDefinition.itemName + "Trigger";
+        Set_Trigger(new Animator[] { animator, hairAnimator}, "axeTrigger");
+        Set_Trigger(new Animator[] { toolAnimator }, animTrigger);
+        isUsingTool = true;
+
+        // Check if the tool can interact with the target
+        string targetLayer = currentItem.itemDefinition.targetLayer;
+        Collider2D hit = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f),
+            new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask(targetLayer));
         if (hit != null)
         {
-            tree = hit.GetComponent<TreeController>();
-            if (tree != null && !tree.isCut)
+            IDestructible interactable = hit.GetComponent<IDestructible>();
+            if (interactable != null )
             {
-                tree.HitTree();
-                Debug.Log("Tree found! Health: " + tree.health);
+                currentInteractable = interactable;
+                interactable.Interact(currentItem.itemDefinition.itemName);
             }
-        } else {
-            tree = null;
+        } else
+        {
+            currentInteractable = null;
         }
     }
 
@@ -136,6 +194,55 @@ public class PlayerController : MonoBehaviour
         } else
         {
             Debug.Log("InventoryManager is null");
+        }
+    }
+
+    void OnHotkeyPerformed(InputAction.CallbackContext context)
+    {
+        string keyPressed = context.control.name;
+        int slotSelectedIndex = -1;
+
+        switch (keyPressed)
+        {
+            case "1": slotSelectedIndex = 0; break;
+            case "2": slotSelectedIndex = 1; break;
+            case "3": slotSelectedIndex = 2; break;
+            case "4": slotSelectedIndex = 3; break;
+            case "5": slotSelectedIndex = 4; break;
+            case "6": slotSelectedIndex = 5; break;
+            case "7": slotSelectedIndex = 6; break;
+            case "8": slotSelectedIndex = 7; break;
+            case "9": slotSelectedIndex = 8; break;
+            case "0": slotSelectedIndex = 9; break;
+            case "minus": slotSelectedIndex = 10; break;
+            case "equals": slotSelectedIndex = 11; break;
+            default: break;
+        }
+
+        if (slotSelectedIndex >= 0 && slotSelectedIndex < hotBarManager.hotBarSlots.Count)
+        {
+            selectedHotbarSlot = slotSelectedIndex;
+
+            // Set selected slot in the UI
+            if (hotBarManager != null)
+            {
+                hotBarManager.SetSelectedSlot(slotSelectedIndex);
+            }
+
+            if (playerInventory == null)
+            {
+                playerInventory = PlayerInventory.Instance;
+                if (playerInventory == null)
+                {
+                    Debug.LogError("PlayerInventory not found");
+                    return;
+                }
+            }
+            ItemStack item = playerInventory.GetItem(slotSelectedIndex);
+            if (item != null)
+            {
+                Debug.Log("Selected item: " + item.itemDefinition.itemName);
+            }
         }
     }
 

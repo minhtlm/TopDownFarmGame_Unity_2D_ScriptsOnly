@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
-public class TreeController : MonoBehaviour
+public class TreeController : MonoBehaviour, IDestructible
 {
     private ParticleSystem woodParticles;
+    private bool isCut = false;
+    private int health = 3;
+    private string toolType = "axe";
+    [SerializeField] private ItemDefinition woodDefinition;
+    [SerializeField] private int woodDropAmount = 1;
     
-    public bool isCut = false;
-    public int health = 3;
     public GameObject leavesHitEffect;
     public Sprite stumpSprite;
 
@@ -17,16 +19,38 @@ public class TreeController : MonoBehaviour
         woodParticles = GetComponentInChildren<ParticleSystem>();
     }
 
+    public bool CanInteract(string toolType)
+    {
+        return !isCut && toolType == this.toolType;
+    }
+
+    public void Interact(string toolType)
+    {
+        if (!CanInteract(toolType)) return;
+        
+        HitTree();
+    }
+
+    public void OnInteractAnimation()
+    {
+        ShakeTree();
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
     public void HitTree()
     {
         if (isCut) return;
 
         health--;
+        Debug.Log("Tree health: " + health);
     }
 
     public void ShakeTree()
     {
-        transform.DOShakePosition(0.5f, 0.2f);
         if (leavesHitEffect != null) {
             leavesHitEffect.GetComponent<Animator>().SetTrigger("LeavesHitTrigger");
         }
@@ -37,7 +61,14 @@ public class TreeController : MonoBehaviour
 
     public void CutTree()
     {
+        if (isCut) return;
         isCut = true;
+
+        if (woodDefinition != null)
+        {
+            DropWood();
+        }
+
         GetComponent<SpriteRenderer>().sprite = stumpSprite;
         SpawnWoodParticles();
         Invoke("DestroyTree", 2.0f);
@@ -49,6 +80,15 @@ public class TreeController : MonoBehaviour
             woodParticles.transform.parent = null;
             woodParticles.Play();
             Destroy(woodParticles.gameObject, woodParticles.main.duration);
+        }
+    }
+
+    private void DropWood()
+    {
+        PlayerInventory playerInventory = PlayerInventory.Instance;
+        if (playerInventory != null)
+        {
+            playerInventory.AddItem(woodDefinition, woodDropAmount);
         }
     }
 

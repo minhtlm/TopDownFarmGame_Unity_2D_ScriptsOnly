@@ -8,4 +8,5 @@ public class ItemDefinition : ScriptableObject
     public string itemName;
     public Sprite itemSprite;
     public int maxStackSize = 1000;
+    public string targetLayer = "";
 }
