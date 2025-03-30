@@ -64,7 +64,6 @@ public class RockController : MonoBehaviour, IDestructible
         if (playerInventory != null)
         {
             playerInventory.AddItem(stoneDefinition, stoneDropAmount);
-            Debug.Log("Added " + stoneDropAmount + " " + stoneDefinition.itemName + " to inventory");
         }
     }
 }

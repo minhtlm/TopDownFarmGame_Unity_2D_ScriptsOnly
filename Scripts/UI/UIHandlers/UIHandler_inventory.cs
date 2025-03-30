@@ -5,11 +5,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class UIInventoryManager : MonoBehaviour
+public class UIHandler_inventory : MonoBehaviour, IClosableUI
 {
     private bool isDragging = false;
     private bool isHovering = false;
-    private bool isInventoryVisible = false;
     private Vector2 pointerDownPosition;
     private Coroutine hoverCoroutine;
     private float hoverDelay = 0.5f;
@@ -20,8 +19,9 @@ public class UIInventoryManager : MonoBehaviour
     private VisualElement draggedElement;
     private UIDocument uiDocument;
     private List<VisualElement> slots = new List<VisualElement>();
-    [SerializeField] private PlayerInventory playerInventory;
-    [SerializeField] private UIHotBarManager hotBarManager;
+    private PlayerInventory playerInventory;
+    [SerializeField] private UIHandler_hotbar hotBarManager;
+    [SerializeField] private PlayerController playerController;
 
 
     // Start is called before the first frame update
@@ -279,37 +279,37 @@ public class UIInventoryManager : MonoBehaviour
         hoverCoroutine = null;
     }
 
-    void ShowInventory()
+    public void ShowInventory()
     {
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
-        isInventoryVisible = true;
+        IClosableUI.openingUI = this;
+
+        playerController.DisableGameplayActions();
+
+        if (hotBarManager != null)
+        {
+            hotBarManager.Hide();
+        }
     }
 
     void HideInventory()
     {
         uiDocument.rootVisualElement.style.display = DisplayStyle.None;
-        isInventoryVisible = false;
+        IClosableUI.openingUI = null;
+
+        playerController.EnableGameplayActions();
+
+        if (hotBarManager != null)
+        {
+            hotBarManager.Show();
+        }
     }
 
-    public void ToggleInventory()
+    public void CloseUI()
     {
-        if (isInventoryVisible)
+        if (IClosableUI.openingUI != null)
         {
             HideInventory();
-
-            if (hotBarManager != null)
-            {
-                hotBarManager.Show();
-            }
-        }
-        else
-        {
-            ShowInventory();
-            
-            if (hotBarManager != null)
-            {
-                hotBarManager.Hide();
-            }
         }
     }
 }

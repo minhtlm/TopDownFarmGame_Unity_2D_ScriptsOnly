@@ -1,0 +1,222 @@
+.shop-panel-container {
+    flex-grow: 0;
+    width: 1536px;
+    height: 864px;
+    align-self: center;
+    justify-content: flex-start;
+    top: 10%;
+    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/ShopPanel_1536x864.png?fileID=21300000&guid=226e5119b23ecf243aee193645b14460&type=3#ShopPanel_1536x864");
+}
+
+.title-panel {
+    flex-grow: 0;
+    height: 64px;
+    width: auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-self: auto;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.main-panel {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.main-panel Label {
+    margin: 0;
+    padding: 0;
+}
+
+.shop-inventory {
+    flex-grow: 0;
+    width: 1104px;
+    align-self: auto;
+}
+
+.summary-panel {
+    flex-grow: 1;
+    align-self: auto;
+    padding: 32px 32px 32px 0;
+}
+
+.selected-items {
+    flex-grow: 0;
+    height: 620px;
+}
+
+.total-panel {
+    flex-grow: 1;
+    height: auto;
+}
+
+.title-label {
+    flex-grow: 1;
+    font-size: 42px;
+    color: rgb(255, 255, 255);
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    -unity-font-definition: initial;
+}
+
+.items-scroll-view {
+    flex-grow: 1;
+    padding: 32px;
+}
+
+.unity-scroll-view__content-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.item-container {
+    flex-grow: 0;
+    width: 260px;
+    height: 320px;
+}
+
+.data-container {
+    flex-grow: 0;
+    height: 260px;
+}
+
+.sell-button {
+    height: 60px;
+    width: 220px;
+    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_220x60.png?fileID=21300000&guid=f37ab7e637647594098b1bdf4ccc8173&type=3#Button_220x60");
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(188, 188, 188, 0);
+    margin-right: 20px;
+    margin-left: 20px;
+    border-width: 0;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    font-size: 40px;
+    color: rgb(0, 0, 0);
+}
+
+.icon-container {
+    flex-grow: 0;
+    height: 160px;
+    padding-right: 50px;
+    padding-left: 50px;
+}
+
+.item-name {
+    height: 42px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    font-size: 48px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+}
+
+.item-price {
+    height: 32px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    color: rgb(255, 255, 255);
+    font-size: 32px;
+}
+
+.item-quantity {
+    height: 26px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    color: rgb(255, 251, 251);
+    font-size: 26px;
+    -unity-text-align: middle-center;
+}
+
+.icon-sprite {
+    flex-grow: 1;
+}
+
+.selected-item-container {
+    flex-grow: 0;
+    height: 100px;
+    width: 400px;
+    flex-direction: row;
+}
+
+.selected-icon {
+    flex-grow: 0;
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    background-image: url("project://database/Assets/Sprites/Tilemaps/spr_tileset_sunnysideworld_16px.png?fileID=849841900&guid=3ac1b11526c1ad048b1acb32f338d1e1&type=3#rock_double");
+}
+
+.selected-item-name {
+    height: 30px;
+    font-size: 30px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    color: rgb(255, 255, 255);
+    -unity-font-style: normal;
+    -unity-text-outline-width: 0;
+}
+
+.selected-item-price {
+    height: 20px;
+    align-self: auto;
+    font-size: 20px;
+    color: rgb(207, 207, 207);
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    -unity-font-style: normal;
+}
+
+.selected-item-quantity-container {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.selected-item-quantity-container Button {
+    margin: 0;
+    padding: 0;
+    width: 80px;
+    font-size: 30px;
+    border-width: 0;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+}
+
+.text-field {
+    width: 130px;
+    margin: 0;
+    padding-left: 50px;
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+}
+
+.unity-text-field__input {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+}
+
+.total-label {
+    height: 52px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    color: rgb(255, 255, 255);
+    font-size: 48px;
+    background-image: none;
+}
+
+.total-sell-button {
+    height: 60px;
+    width: 320px;
+    margin: 0px 40px 4px 40px;
+    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_320x60.png");
+    background-color: transparent;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    font-size: 48px;
+    border-width: 0px;
+}

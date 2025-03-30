@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: axe
   itemSprite: {fileID: 21300000, guid: c0edc711f78f03a45b679edf91afbc7b, type: 3}
+  itemPrice: 0
   maxStackSize: 1000
   targetLayer: Tree

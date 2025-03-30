@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/ScreenFader.uss?fileID=7433441132597879392&amp;guid=a185598aa1cc38241b645a6e7f7adf2a&amp;type=3#ScreenFader" />
+    <ui:VisualElement name="ScreenFader" picking-mode="Ignore" class="fade-screen" />
+</ui:UXML>

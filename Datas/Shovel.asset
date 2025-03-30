@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: shovel
   itemSprite: {fileID: 21300000, guid: 4ee5532d50165e24580cbb13387ca128, type: 3}
+  itemPrice: 0
+  maxStackSize: 1000
+  targetLayer: 

@@ -1,0 +1,47 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/TradingPanel.uss?fileID=7433441132597879392&amp;guid=7a8db074c53196345be4db74f6fb9ee7&amp;type=3#TradingPanel" />
+    <ui:VisualElement name="TradingPanelContainer" class="shop-panel-container">
+        <ui:VisualElement name="TitlePanel" class="title-panel">
+            <ui:Label tabindex="-1" text="Trading Post" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title-label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="MainPanel" class="main-panel">
+            <ui:VisualElement name="TradingInventory" class="shop-inventory">
+                <ui:ScrollView name="ItemsScrollView" class="items-scroll-view">
+                    <ui:VisualElement style="flex-grow: 0; width: 260px; height: 320px;">
+                        <ui:VisualElement name="DataContainer" class="data-container">
+                            <ui:VisualElement name="IconContainer" class="icon-container">
+                                <ui:VisualElement name="Icon" class="icon-sprite" />
+                            </ui:VisualElement>
+                            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ItemName" class="item-name" style="font-size: 42px;" />
+                            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ItemPrice" class="item-name" style="height: 32px; font-size: 32px;" />
+                            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ItemQuantity" class="item-quantity" />
+                        </ui:VisualElement>
+                        <ui:Button text="Sell" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SellButton" class="sell-button" />
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement name="SummaryPanel" class="summary-panel">
+                <ui:VisualElement name="SelectedItems" class="selected-items">
+                    <ui:ScrollView name="SelectedItemsScrollView" style="flex-grow: 1; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;">
+                        <ui:VisualElement class="selected-item-container" style="flex-grow: 1; flex-direction: row;">
+                            <ui:VisualElement name="icon" class="selected-icon" style="flex-grow: 0;" />
+                            <ui:VisualElement style="flex-grow: 1;">
+                                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" class="selected-item-name" />
+                                <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="selected-item-price" />
+                                <ui:VisualElement class="selected-item-quantity-container">
+                                    <ui:Button text="-" parse-escape-sequences="true" display-tooltip-when-elided="true" class="minus-button" />
+                                    <ui:TextField picking-mode="Ignore" value="text" class="text-field" />
+                                    <ui:Button text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" class="plus-button minus-button" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:ScrollView>
+                </ui:VisualElement>
+                <ui:VisualElement name="TotalPanel" class="total-panel">
+                    <ui:Label tabindex="-1" text="Total: $1.000.000.000" parse-escape-sequences="true" display-tooltip-when-elided="true" class="total-label" />
+                    <ui:Button text="Sell" parse-escape-sequences="true" display-tooltip-when-elided="true" class="total-sell-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

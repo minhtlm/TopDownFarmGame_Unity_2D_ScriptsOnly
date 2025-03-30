@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCController : MonoBehaviour
+public class NPCController : MonoBehaviour, IInteractable
 {
     private GameObject expression;
+    [SerializeField] private UIHandler_tradingPanel tradingPanelManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        expression = GetComponentInChildren<SpriteRenderer>().gameObject;
+        expression = transform.Find("Expression").gameObject;
         if (expression != null)
         {
             expression.SetActive(false);
@@ -20,11 +21,9 @@ public class NPCController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player entered NPC trigger");
             if (expression != null)
             {
                 expression.SetActive(true);
-                Debug.Log("Expression activated");
             }
         }
     }
@@ -38,5 +37,10 @@ public class NPCController : MonoBehaviour
                 expression.SetActive(false);
             }
         }
+    }
+
+    public void OnInteract()
+    {
+        tradingPanelManager.ShowTradingPanel();
     }
 }

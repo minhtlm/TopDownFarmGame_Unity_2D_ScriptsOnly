@@ -3,22 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class UIHotBarManager : MonoBehaviour
+public class UIHandler_hotbar : MonoBehaviour
 {
     private UIDocument uiDocument;
-    private VisualElement root;
     private PlayerInventory playerInventory;
     private bool isVisible = true;
     private int initialSelectedSlotIndex = 0;
 
     public List<VisualElement> hotBarSlots = new List<VisualElement>();
 
+    void Awake()
+    {
+        uiDocument = GetComponent<UIDocument>();
+        if (playerInventory == null)
+        {
+            playerInventory = PlayerInventory.Instance;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        uiDocument = GetComponent<UIDocument>();
-        root = uiDocument.rootVisualElement;
-
+        if (uiDocument == null)
+        {
+            uiDocument = GetComponent<UIDocument>();
+        }
+        VisualElement root = uiDocument.rootVisualElement;
         VisualElement hotBarContainer = root.Q<VisualElement>("HotBarContainer");
         if (hotBarContainer != null)
         {
@@ -33,17 +43,12 @@ public class UIHotBarManager : MonoBehaviour
             return;
         }
 
+        SetSelectedSlot(initialSelectedSlotIndex);
+
         if (playerInventory == null)
         {
             playerInventory = PlayerInventory.Instance;
-            if (playerInventory == null)
-            {
-                Debug.LogError("PlayerInventory not found");
-                return;
-            }
         }
-        SetSelectedSlot(initialSelectedSlotIndex);
-
         playerInventory.OnInventoryChanged += UpdateHotBarUI;
 
         UpdateHotBarUI();
@@ -63,8 +68,11 @@ public class UIHotBarManager : MonoBehaviour
 
         ClearAllSlots();
 
+        if (playerInventory == null)
+        {
+            playerInventory = PlayerInventory.Instance;
+        }
         List<ItemStack> playerItems = playerInventory.GetItems();
-        Debug.Log("Player items: " + playerItems.Count);
 
         for (int i = 0; i < hotBarSlots.Count && i < playerItems.Count; i++)
         {
@@ -108,14 +116,28 @@ public class UIHotBarManager : MonoBehaviour
     public void Hide()
     {
         isVisible = false;
-        root.style.display = DisplayStyle.None;
+        if (uiDocument != null)
+        {
+            uiDocument.rootVisualElement.style.display = DisplayStyle.None;
+        }
+        else
+        {
+            Debug.LogError("UIDocument not found to hide the hotbar");
+        }
     }
 
     public void Show()
     {
         isVisible = true;
-        root.style.display = DisplayStyle.Flex;
-        UpdateHotBarUI();
+        if (uiDocument != null)
+        {
+            uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+            UpdateHotBarUI();
+        }
+        else
+        {
+            Debug.LogError("UIDocument not found to show the hotbar");
+        }
     }
 
     public void SetSelectedSlot(int slotIndex)

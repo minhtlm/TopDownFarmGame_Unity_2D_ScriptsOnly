@@ -1,0 +1,33 @@
+.currency-container {
+    width: auto;
+    height: 50px;
+    position: absolute;
+    flex-direction: row;
+    align-items: center;
+    align-self: flex-end;
+}
+
+.coin-icon {
+    background-image: url("project://database/Assets/Sprites/UI/UIStatus/CoinIcon_16x18.png?fileID=21300000&guid=68d303fb8a8d02f4ea14e0862a4cfab4&type=3#CoinIcon_16x18");
+    -unity-background-scale-mode: scale-to-fit;
+    width: 50px;
+    height: 50px;
+}
+
+.money-label {
+    flex-grow: 1;
+    padding: 5px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    font-size: 30px;
+    -unity-font-style: normal;
+    -unity-text-align: middle-left;
+}
+
+.status-container {
+    flex-grow: 0;
+    height: 50px;
+    width: 500px;
+    flex-wrap: nowrap;
+    align-self: flex-end;
+}

@@ -20,6 +20,10 @@ public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] private List<ItemStack> items = new List<ItemStack>();
     private int maxInventorySlots = 36;
+    
+    [SerializeField] private int money = 0;
+
+    public event Action OnMoneyChanged; // Event to trigger when the money changes
 
     // Event to trigger when the inventory changes
     public event Action OnInventoryChanged;
@@ -79,6 +83,11 @@ public class PlayerInventory : MonoBehaviour
 
         for (int i = 0; i < items.Count; i++)
         {
+            if (items[i] == null) // Skip null items
+            {
+                Debug.Log("Item is null, skipping.");
+                continue;
+            }
             if (items[i].itemDefinition == itemToRemove)
             {
                 items[i].quantity -= amount;
@@ -156,5 +165,37 @@ public class PlayerInventory : MonoBehaviour
         }
 
         OnInventoryChanged?.Invoke();
+    }
+
+    public int GetMoney()
+    {
+        return money;
+    }
+
+    public void AddMoney(int amount)
+    {
+        if (amount <= 0) return;
+
+        money += amount;
+        OnMoneyChanged?.Invoke();
+    }
+
+    public bool SpendMoney(int amount)
+    {
+        if (amount <= 0) return false;
+
+        if (money >= amount)
+        {
+            money -= amount;
+            OnMoneyChanged?.Invoke();
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool CanAfford(int amount)
+    {
+        return money >= amount;
     }
 }

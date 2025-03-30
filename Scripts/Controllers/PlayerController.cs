@@ -14,19 +14,19 @@ public class PlayerController : MonoBehaviour
     private Vector2 lookDirection;
     private Animator animator;
     private TreeController tree;
-    private IDestructible currentInteractable;
+    private IDestructible currentDestructible;
     private ItemStack currentItem = null;
     private PlayerInventory playerInventory;
-    [SerializeField] private ShopHouseController shopHouseController;
-    [SerializeField] private UIInventoryManager inventoryManager;
-    [SerializeField] private UIHotBarManager hotBarManager;
+    [SerializeField] private UIHandler_inventory inventoryManager;
+    [SerializeField] private UIHandler_hotbar hotBarManager;
 
     // Input actions
     [SerializeField] private InputAction moveAction;
-    [SerializeField] private InputAction ToggleInventoryAction; // Key: tab
-    [SerializeField] private InputAction UseToolAction; // Key: F
-    [SerializeField] private InputAction InteractAction; // Key: E
+    [SerializeField] private InputAction showingInventoryAction; // Key: tab
+    [SerializeField] private InputAction useToolAction; // Key: F
+    [SerializeField] private InputAction interactAction; // Key: E
     [SerializeField] private InputAction hotKeyAction; // Key: 1-9, 0, -, =
+    [SerializeField] private InputAction escapeAction; // Key: esc
 
     public Animator hairAnimator;
     public Animator toolAnimator;
@@ -39,28 +39,34 @@ public class PlayerController : MonoBehaviour
 
     void OnEnable()
     {
-        ToggleInventoryAction.Enable();
-        UseToolAction.Enable();
-        InteractAction.Enable();
+        moveAction.Enable();
+        showingInventoryAction.Enable();
+        useToolAction.Enable();
+        interactAction.Enable();
         hotKeyAction.Enable();
+        escapeAction.Enable();
 
-        ToggleInventoryAction.performed += OnToggleInventoryPerformed;
-        UseToolAction.performed += (UseTool);
-        InteractAction.performed += (OnInteraction);
+        showingInventoryAction.performed += OnShowingInventoryPerformed;
+        useToolAction.performed += (UseTool);
+        interactAction.performed += (OnInteraction);
         hotKeyAction.performed += OnHotkeyPerformed;
+        escapeAction.performed += (OnEscapePressed);
     }
 
     void OnDisable()
     {
-        ToggleInventoryAction.performed -= OnToggleInventoryPerformed;
-        UseToolAction.performed -= (UseTool);
-        InteractAction.performed -= (OnInteraction);
+        showingInventoryAction.performed -= OnShowingInventoryPerformed;
+        useToolAction.performed -= (UseTool);
+        interactAction.performed -= (OnInteraction);
         hotKeyAction.performed -= OnHotkeyPerformed;
+        escapeAction.performed -= (OnEscapePressed);
 
-        ToggleInventoryAction.Disable();
-        UseToolAction.Disable();
-        InteractAction.Disable();
+        moveAction.Disable();
+        showingInventoryAction.Disable();
+        useToolAction.Disable();
+        interactAction.Disable();
         hotKeyAction.Disable();
+        escapeAction.Disable();
     }
 
     // Start is called before the first frame update
@@ -68,14 +74,13 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        moveAction.Enable();
         if (inventoryManager == null)
         {
-            inventoryManager = FindObjectOfType<UIInventoryManager>();
+            inventoryManager = FindObjectOfType<UIHandler_inventory>();
         }
         if (hotBarManager == null)
         {
-            hotBarManager = FindObjectOfType<UIHotBarManager>();
+            hotBarManager = FindObjectOfType<UIHandler_hotbar>();
         }
     }
 
@@ -92,7 +97,15 @@ public class PlayerController : MonoBehaviour
             }
             Set_Look(new Animator[] { animator, hairAnimator, toolAnimator });
             Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
+        }
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (playerInventory == null)
+            {
+                playerInventory = PlayerInventory.Instance;
+            }
+            playerInventory.AddMoney(100);
         }
     }
 
@@ -112,23 +125,32 @@ public class PlayerController : MonoBehaviour
     // Shake the tree by Animation event
     void OnInteractAnimation()
     {
-        if (currentInteractable != null && currentInteractable.CanInteract(currentItem.itemDefinition.itemName))
+        if (currentDestructible != null && currentDestructible.CanInteract(currentItem.itemDefinition.itemName))
         {
-            currentInteractable.OnInteractAnimation();
+            currentDestructible.OnInteractAnimation();
         }
         else
         {
-            Debug.Log("No interactable object found: ");
+            Debug.Log("No destructible object found: ");
         }
     }
 
     void OnInteraction(InputAction.CallbackContext context)
     {
-        shopHouseController = ShopHouseController.Instance;
-        if (shopHouseController != null)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + new Vector3(0, 0.5f, 0), 1.0f, LayerMask.GetMask("Interactable"));
+        if (hits != null && hits.Length > 0)
         {
-            Debug.Log("Interacting with shop house");
-            shopHouseController.EnterShopHouse(gameObject);
+            foreach (Collider2D hit in hits)
+            {
+                if (!hit.isTrigger)
+                {
+                    IInteractable interactable = hit.GetComponent<IInteractable>();
+                    if (interactable != null)
+                    {
+                        interactable.OnInteract();
+                    }
+                }
+            }
         }
     }   
 
@@ -174,23 +196,23 @@ public class PlayerController : MonoBehaviour
             new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask(targetLayer));
         if (hit != null)
         {
-            IDestructible interactable = hit.GetComponent<IDestructible>();
-            if (interactable != null )
+            IDestructible destructible = hit.GetComponent<IDestructible>();
+            if (destructible != null )
             {
-                currentInteractable = interactable;
-                interactable.Interact(currentItem.itemDefinition.itemName);
+                currentDestructible = destructible;
+                destructible.Interact(currentItem.itemDefinition.itemName);
             }
         } else
         {
-            currentInteractable = null;
+            currentDestructible = null;
         }
     }
 
-    void OnToggleInventoryPerformed(InputAction.CallbackContext context)
+    void OnShowingInventoryPerformed(InputAction.CallbackContext context)
     {
         if (inventoryManager != null)
         {
-            inventoryManager.ToggleInventory();
+            inventoryManager.ShowInventory();
         } else
         {
             Debug.Log("InventoryManager is null");
@@ -246,6 +268,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnEscapePressed(InputAction.CallbackContext context)
+    {
+        if (IClosableUI.openingUI != null)
+        {
+            IClosableUI.openingUI.CloseUI();
+        }
+        else
+        {
+            Debug.Log("Open Menu");
+        }
+    }
+
     void Set_Look(Animator[] animators)
     {
         foreach (Animator animator in animators)
@@ -268,5 +302,23 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger(trigger);
         }
+    }
+
+    public void DisableGameplayActions()
+    {
+        moveAction.Disable();
+        showingInventoryAction.Disable();
+        useToolAction.Disable();
+        interactAction.Disable();
+        hotKeyAction.Disable();
+    }
+
+    public void EnableGameplayActions()
+    {
+        moveAction.Enable();
+        showingInventoryAction.Enable();
+        useToolAction.Enable();
+        interactAction.Enable();
+        hotKeyAction.Enable();
     }
 }
