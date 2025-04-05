@@ -1,0 +1,139 @@
+.player-stats-container {
+    flex-grow: 0;
+    width: 500px;
+    height: 300px;
+    padding-top: 32px;
+    padding-left: 32px;
+}
+
+.health-bar-container {
+    flex-grow: 0;
+    height: 24px;
+    flex-direction: row;
+}
+
+.hunger-thirst-container {
+    flex-grow: 0;
+    height: 16px;
+    flex-direction: row;
+}
+
+.currency-container {
+    flex-grow: 0;
+    height: 24px;
+    flex-direction: row;
+    margin-top: 6px;
+}
+
+.heart-icon {
+    flex-grow: 0;
+    width: 24px;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/HeartIcons_32x32.png?fileID=21300000&guid=e1529ecee18a5e44abe7e6f006a2b55a&type=3#HeartIcons_32x32");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.health-bar {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/ValueBar_320x24.png?fileID=21300000&guid=2088878dd0b4f48448d4ccf7662d1b2a&type=3#ValueBar_320x24");
+    -unity-background-scale-mode: scale-to-fit;
+    position: relative;
+    height: 24px;
+    width: 320px;
+    padding: 5px;
+}
+
+.health-value-container {
+    flex-grow: 1;
+}
+
+.health-value {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/ValueHealth_120x8.png?fileID=21300000&guid=c770102171da7d04ab5d6fa30720a7ef&type=3#ValueHealth_120x8");
+}
+
+.hunger-bar-container {
+    flex-grow: 0;
+    flex-direction: row;
+}
+
+.hunger-icon {
+    flex-grow: 0;
+    width: 16px;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/92_sandwich.png?fileID=21300000&guid=5eceb2d8e8ddd674faffcf38dadac016&type=3#92_sandwich");
+    margin-left: 8px;
+}
+
+.hunger-bar {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/ValueBar_160x16.png?fileID=21300000&guid=399ce3f0311090448aa460ab3ae3c3d1&type=3#ValueBar_160x16");
+    -unity-background-scale-mode: scale-to-fit;
+    position: relative;
+    height: 16px;
+    width: 148px;
+    padding: 4px 3px 4px 3px;
+}
+
+.hunger-value-container {
+    flex-grow: 1;
+    position: relative;
+}
+
+.hunger-value {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/ValueHunger_120x8.png?fileID=21300000&guid=5077582a2c1910147b167a26c26fdab5&type=3#ValueHunger_120x8");
+    position: relative;
+}
+
+.thirst-bar-container {
+    flex-grow: 0;
+    flex-direction: row;
+}
+
+.thirst-icon {
+    flex-grow: 0;
+    width: 16px;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/thirstIconUI.png?fileID=21300000&guid=1b77af4dd74b7364db1dc3b5311aada4&type=3#thirstIconUI");
+    margin-left: 8px;
+}
+
+.thirst-bar {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/ValueBar_160x16.png?fileID=21300000&guid=399ce3f0311090448aa460ab3ae3c3d1&type=3#ValueBar_160x16");
+    -unity-background-scale-mode: scale-to-fit;
+    position: relative;
+    height: 16px;
+    width: 148px;
+    padding: 4px 3px 4px 3px;
+}
+
+.thirst-value-container {
+    flex-grow: 1;
+    position: relative;
+}
+
+.thirst-value {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Sprites/UI/UIPlayerStats/ValueBlue_120x8.png?fileID=21300000&guid=d437af65e4bb9db4680e92e857945762&type=3#ValueBlue_120x8");
+    position: relative;
+}
+
+.gold-icon {
+    flex-grow: 0;
+    width: 24px;
+    background-image: url("project://database/Assets/Sprites/UI/UIStatus/CoinIcon_16x18.png?fileID=21300000&guid=68d303fb8a8d02f4ea14e0862a4cfab4&type=3#CoinIcon_16x18");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.money-label {
+    margin: 0;
+    padding: 0;
+    -unity-text-align: middle-left;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    font-size: 24px;
+    color: rgb(221, 221, 221);
+    -unity-text-outline-width: 0.5px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    text-shadow: 3px 3px 2px rgb(0, 0, 0);
+    -unity-font-style: bold;
+}

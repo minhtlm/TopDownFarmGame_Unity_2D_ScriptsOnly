@@ -21,12 +21,7 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private List<ItemStack> items = new List<ItemStack>();
     private int maxInventorySlots = 36;
     
-    [SerializeField] private int money = 0;
-
-    public event Action OnMoneyChanged; // Event to trigger when the money changes
-
-    // Event to trigger when the inventory changes
-    public event Action OnInventoryChanged;
+    public event Action OnInventoryChanged; // Event to trigger when the inventory changes
 
     public static PlayerInventory Instance { get; private set; }
 
@@ -39,6 +34,8 @@ public class PlayerInventory : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        DontDestroyOnLoad(gameObject);
     }
 
     public List<ItemStack> GetItems()
@@ -48,25 +45,46 @@ public class PlayerInventory : MonoBehaviour
 
     public ItemStack GetItem(int index)
     {
-        return items[index];
+        if (index >= 0 && index < items.Count)
+        {
+            return items[index];
+        }
+
+        return null; // Return null if index is out of range
     }
 
     public bool AddItem(ItemDefinition itemToAdd, int amount)
     {
         if (itemToAdd == null) return false;
+        int firstEmptySlot = -1;
 
         // Check if the item is already in the inventory
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i].itemDefinition == itemToAdd)
+            ItemStack item = items[i];
+
+            if (item == null) // Find the first empty slot
             {
-                items[i].quantity += amount;
+                if (firstEmptySlot == -1) firstEmptySlot = i;
+                continue; // Skip null items
+            }
+
+            if (item.itemDefinition == itemToAdd)
+            {
+                item.quantity += amount;
                 OnInventoryChanged?.Invoke();
                 return true;
             }
         }
 
-        if (items.Count < maxInventorySlots)
+        if (firstEmptySlot != -1) // If there's an empty slot, add the item there
+        {
+            items[firstEmptySlot] = new ItemStack(itemToAdd, amount);
+            OnInventoryChanged?.Invoke();
+            return true;
+        }
+
+        if (items.Count < maxInventorySlots) // If there's no empty slot add the item to the end of the list
         {
             items.Add(new ItemStack(itemToAdd, amount));
             OnInventoryChanged?.Invoke();
@@ -83,17 +101,14 @@ public class PlayerInventory : MonoBehaviour
 
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i] == null) // Skip null items
-            {
-                Debug.Log("Item is null, skipping.");
-                continue;
-            }
+            if (items[i] == null) continue; // Skip null items
+
             if (items[i].itemDefinition == itemToRemove)
             {
                 items[i].quantity -= amount;
                 if (items[i].quantity <= 0)
                 {
-                    items.RemoveAt(i);
+                    items[i] = null; // Remove the item from the inventory
                 }
 
                 OnInventoryChanged?.Invoke();
@@ -110,6 +125,8 @@ public class PlayerInventory : MonoBehaviour
 
         foreach (ItemStack item in items)
         {
+            if (item == null) continue; // Skip null items
+
             if (item.itemDefinition == itemToCheck && item.quantity >= minAmount)
             {
                 return true;
@@ -132,7 +149,7 @@ public class PlayerInventory : MonoBehaviour
             if (draggedItem != null && targetItem != null && draggedItem.itemDefinition == targetItem.itemDefinition)
             {
                 int totalQuantity = draggedItem.quantity + targetItem.quantity;
-                int maxStack = draggedItem.itemDefinition.maxStackSize;
+                int maxStack = draggedItem.itemDefinition.MaxStackSize;
 
                 if (totalQuantity <= maxStack)
                 {
@@ -165,37 +182,5 @@ public class PlayerInventory : MonoBehaviour
         }
 
         OnInventoryChanged?.Invoke();
-    }
-
-    public int GetMoney()
-    {
-        return money;
-    }
-
-    public void AddMoney(int amount)
-    {
-        if (amount <= 0) return;
-
-        money += amount;
-        OnMoneyChanged?.Invoke();
-    }
-
-    public bool SpendMoney(int amount)
-    {
-        if (amount <= 0) return false;
-
-        if (money >= amount)
-        {
-            money -= amount;
-            OnMoneyChanged?.Invoke();
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool CanAfford(int amount)
-    {
-        return money >= amount;
     }
 }

@@ -67,7 +67,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: url("project://database/Assets/Sprites/UI/UIInventory/item-highlight.png");
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/item-highlight.png?fileID=21300000&guid=7623088c70c330f4ca6047fe78a5c964&type=3#item-highlight");
 }
 
 .dragged-item {
@@ -81,4 +81,95 @@
     height: 64px;
     transition: all 0.1s;
     scale: 1.1;
+}
+
+.tooltip-container {
+    position: absolute;
+    height: 334px;
+    width: 280px;
+    top: 485px;
+    left: 942px;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    -unity-text-outline-color: rgb(0, 0, 0);
+    -unity-text-outline-width: 0.3px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+}
+
+.tooltip-above {
+    flex-grow: 0;
+    height: 108px;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/TooltipAbove_280x108.png?fileID=21300000&guid=2e0ac5db489a58b4fb0d73b52b88a579&type=3#TooltipAbove_280x108");
+    -unity-background-scale-mode: scale-to-fit;
+    padding: 16px 0 22px 16px;
+}
+
+.tooltip-under {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/TooltipUnder_280x100.png?fileID=21300000&guid=cb0b705d95eb50d4ebae3a73b6ac9d93&type=3#TooltipUnder_280x100");
+    -unity-background-scale-mode: stretch-to-fill;
+    height: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+    max-height: 210px;
+}
+
+.tooltip-footer {
+    flex-grow: 0;
+    height: 16px;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/TooltipFooter_280x16.png?fileID=21300000&guid=2b2e1fabb8113884bbc374fc8a4bfe69&type=3#TooltipFooter_280x16");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.tooltip-name-label {
+    flex-grow: 0;
+    height: 40px;
+    font-size: 48px;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+    -unity-text-align: lower-left;
+}
+
+.tooltip-type-label {
+    flex-grow: 0;
+    height: 30px;
+    font-size: 32px;
+    color: rgb(220, 226, 25);
+    margin: 0;
+    padding: 0;
+}
+
+.tooltip-description-label {
+    flex-grow: 1;
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.inventory-container {
+    flex-grow: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    width: 960px;
+    height: 324px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/InventoryContainer_960x324.png?fileID=21300000&guid=c440654669156cf47bcb9b58d7de30c2&type=3#InventoryContainer_960x324");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.header {
+    flex-grow: 1;
+    height: 16px;
+    flex-direction: row;
+    align-items: auto;
+    padding-right: 16px;
+    padding-left: 16px;
+    width: 100%;
 }

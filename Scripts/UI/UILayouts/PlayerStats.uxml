@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/PlayerStats.uss?fileID=7433441132597879392&amp;guid=8cbb46f6cf1298e4985b6606e5a16574&amp;type=3#PlayerStats" />
+    <ui:VisualElement name="PlayerStatsContainer" class="player-stats-container">
+        <ui:VisualElement name="HealthBarContainer" class="health-bar-container">
+            <ui:VisualElement name="HealthIcon" class="heart-icon" />
+            <ui:VisualElement name="HealthBar" class="health-bar">
+                <ui:VisualElement name="HealthValueContainer" class="health-value-container">
+                    <ui:VisualElement name="HealthValue" class="health-value" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="HungerThirstContainer" class="hunger-thirst-container">
+            <ui:VisualElement name="HungerBarContainer" class="hunger-bar-container">
+                <ui:VisualElement name="HungerIcon" class="hunger-icon" style="background-image: url(&quot;project://database/Assets/Sprites/Elements/Food/92_sandwich.png?fileID=21300000&amp;guid=ba953aefda7714b49bcef1e707373798&amp;type=3#92_sandwich&quot;);" />
+                <ui:VisualElement name="HungerBar" class="hunger-bar">
+                    <ui:VisualElement name="HungerValueContainer" class="hunger-value-container">
+                        <ui:VisualElement name="HungerValue" class="hunger-value" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="ThirstBarContainer" class="thirst-bar-container">
+                <ui:VisualElement name="ThirstIcon" class="thirst-icon" />
+                <ui:VisualElement name="ThirstBar" class="thirst-bar">
+                    <ui:VisualElement name="ThirstValueContainer" class="thirst-value-container">
+                        <ui:VisualElement name="ThirstValue" class="thirst-value" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="CurrencyContainer" class="currency-container">
+            <ui:VisualElement name="GoldIcon" class="gold-icon" />
+            <ui:Label tabindex="-1" text="100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoneyLabel" class="money-label" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

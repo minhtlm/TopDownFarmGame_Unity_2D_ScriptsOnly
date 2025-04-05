@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
+public class UIHandler_tradingPanel : IClosableUI
 {
     private int totalPrice;
     private UIDocument uiDocument;
@@ -26,22 +26,10 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         selectedItemsScrollView = uiDocument.rootVisualElement.Q<ScrollView>("SelectedItemsScrollView");
         totalPanel = uiDocument.rootVisualElement.Q<VisualElement>("TotalPanel");
 
-        // Create and hide the total price panel
-        totalPanel.Clear();
-        totalLabel = new Label("Total : $" + totalPrice.ToString());
-        totalLabel.AddToClassList("total-label");
-        Button totalSellButton = new Button();
-        totalSellButton.text = "Sell All";
-        totalSellButton.AddToClassList("total-sell-button");
-        totalSellButton.clicked += () => ConfirmTransaction();
-        totalPanel.Add(totalLabel);
-        totalPanel.Add(totalSellButton);
-
-        UpdateTotalPanel();
         HideTradingPanel();
     }
 
-    VisualElement CreatePlayerItemElement(ItemStack item)
+    void CreatePlayerItemElement(ItemStack item)
     {
         string itemID = item.itemDefinition.itemID;
 
@@ -51,17 +39,14 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         VisualElement dataContainer = new VisualElement();
         dataContainer.AddToClassList("data-container");
 
-        VisualElement iconContainer = new VisualElement();
-        iconContainer.AddToClassList("icon-container");
-
         VisualElement icon = new VisualElement();
-        icon.style.backgroundImage = new StyleBackground(item.itemDefinition.itemSprite.texture);
+        icon.style.backgroundImage = new StyleBackground(item.itemDefinition.ItemSprite.texture);
         icon.AddToClassList("icon-sprite");
 
-        Label itemName = new Label(item.itemDefinition.itemName);
+        Label itemName = new Label(item.itemDefinition.ItemName);
         itemName.AddToClassList("item-name");
 
-        Label itemPrice = new Label(item.itemDefinition.itemPrice.ToString() + "$");
+        Label itemPrice = new Label(item.itemDefinition.ItemPrice.ToString() + "$");
         itemPrice.AddToClassList("item-price");
 
         Label itemQuantity = new Label("Quantity: " + item.quantity.ToString());
@@ -73,8 +58,7 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         sellButton.AddToClassList("sell-button");
         sellButton.clicked += () => TransferItem(item, playerItems, selectedItems, 1);
 
-        iconContainer.Add(icon);
-        dataContainer.Add(iconContainer);
+        dataContainer.Add(icon);
         dataContainer.Add(itemName);
         dataContainer.Add(itemPrice);
         dataContainer.Add(itemQuantity);
@@ -84,11 +68,9 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         itemsScrollView.Add(itemContainer);
 
         playerItemElements[itemID] = itemContainer;
-
-        return itemContainer;
     }
 
-    VisualElement CreateSelectedItemElement(ItemStack item)
+    void CreateSelectedItemElement(ItemStack item)
     {
         string itemID = item.itemDefinition.itemID;
 
@@ -97,14 +79,14 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
 
         VisualElement selectedIcon = new VisualElement();
         selectedIcon.AddToClassList("selected-icon");
-        selectedIcon.style.backgroundImage = new StyleBackground(item.itemDefinition.itemSprite.texture);
+        selectedIcon.style.backgroundImage = new StyleBackground(item.itemDefinition.ItemSprite.texture);
 
         VisualElement selectedDataContainer = new VisualElement();
 
-        Label selectedItemName = new Label(item.itemDefinition.itemName);
+        Label selectedItemName = new Label(item.itemDefinition.ItemName);
         selectedItemName.AddToClassList("selected-item-name");
 
-        Label selectedItemPrice = new Label(item.itemDefinition.itemPrice.ToString() + "$");
+        Label selectedItemPrice = new Label(item.itemDefinition.ItemPrice.ToString() + "$");
         selectedItemPrice.AddToClassList("selected-item-price");
 
         VisualElement selectedItemQuantityContainer = new VisualElement();
@@ -151,8 +133,6 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         selectedItemsScrollView.Add(selectedItemContainer);
 
         selectedItemElements[itemID] = selectedItemContainer;
-
-        return selectedItemContainer;
     }
 
     void ProcessQuanityChange(ItemStack item, TextField textField)
@@ -214,6 +194,11 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
                     itemsScrollView.Remove(element);
                 }
                 playerItems.Remove(item);
+
+                if (playerItemElements.Count <= 0)
+                {
+                    CreateEmptyInventoryLabel();
+                }
             }
             else if (playerItemElements.TryGetValue(itemId, out VisualElement playerItemElement))
             {
@@ -293,13 +278,13 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         // Update the total price and UI elements
         if (sourceList == playerItems && targetList == selectedItems)
         {
-            totalPrice += sourceItem.itemDefinition.itemPrice * quantity;
+            totalPrice += sourceItem.itemDefinition.ItemPrice * quantity;
             UpdatePlayerItemUI(sourceItem);
             UpdateSelectedItemUI(targetItem);
         }
         else if (sourceList == selectedItems && targetList == playerItems)
         {
-            totalPrice -= sourceItem.itemDefinition.itemPrice * quantity;
+            totalPrice -= sourceItem.itemDefinition.ItemPrice * quantity;
             UpdateSelectedItemUI(sourceItem);
             UpdatePlayerItemUI(targetItem);
         }
@@ -310,6 +295,19 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
             sourceList.Remove(sourceItem);
         }
         UpdateTotalPanel();
+    }
+
+    void CreateTotalPanel()
+    {
+        totalPanel.Clear();
+        totalLabel = new Label("Total : $" + totalPrice.ToString());
+        totalLabel.AddToClassList("total-label");
+        Button totalSellButton = new Button();
+        totalSellButton.text = "Sell All";
+        totalSellButton.AddToClassList("total-sell-button");
+        totalSellButton.clicked += () => ConfirmTransaction();
+        totalPanel.Add(totalLabel);
+        totalPanel.Add(totalSellButton);
     }
 
     void UpdateTotalPanel()
@@ -336,21 +334,30 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
             return;
         }
 
+        PlayerStats playerStats = PlayerStats.Instance;
         PlayerInventory playerInventory = PlayerInventory.Instance;
-        if (playerInventory != null)
+        if (playerStats != null && playerInventory != null)
         {
-            playerInventory.AddMoney(totalPrice);
+            playerStats.AddMoney(totalPrice);
             foreach (ItemStack item in selectedItems)
             {
                 playerInventory.RemoveItem(item.itemDefinition, item.quantity);
             }
-        }
-        
-        RebuildTradingPanel();
+            CloseUI();
+        }   
+    }
+
+    void CreateEmptyInventoryLabel()
+    {
+        Label emptyInventoryLabel = new Label("Nothing to sell!");
+        emptyInventoryLabel.AddToClassList("empty-inventory-label");
+        itemsScrollView.Clear();
+        itemsScrollView.Add(emptyInventoryLabel);
     }
 
     void RebuildTradingPanel()
     {
+        CreateTotalPanel();
         playerItemElements.Clear();
         itemsScrollView.Clear();
         selectedItemElements.Clear();
@@ -372,6 +379,12 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
             }
         }
 
+        if (playerItems.Count <= 0)
+        {
+            CreateEmptyInventoryLabel();
+            return;
+        }
+
         // Recreate the player items UI elements
         foreach (ItemStack item in playerItems)
         {
@@ -380,7 +393,7 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         }
     }
 
-    public void ShowTradingPanel()
+    public override void ShowUI()
     {
         RebuildTradingPanel();
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
@@ -404,7 +417,7 @@ public class UIHandler_tradingPanel : MonoBehaviour, IClosableUI
         }
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
         if (IClosableUI.openingUI != null)
         {

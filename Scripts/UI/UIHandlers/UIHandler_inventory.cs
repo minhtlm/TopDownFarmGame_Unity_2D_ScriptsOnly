@@ -5,18 +5,22 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class UIHandler_inventory : MonoBehaviour, IClosableUI
+public class UIHandler_inventory : IClosableUI
 {
     private bool isDragging = false;
     private bool isHovering = false;
+    private bool isCreated = false;
     private Vector2 pointerDownPosition;
     private Coroutine hoverCoroutine;
     private float hoverDelay = 0.5f;
     private int hoveredSlotIndex = -1;
     private int targetSlotIndex = -1;
     private int draggedItemIndex = -1;
-    private VisualElement highlightedElement;
     private VisualElement draggedElement;
+    private VisualElement tooltip;
+    private Label tooltipNameLabel;
+    private Label tooltipTypeLabel;
+    private Label tooltipDescriptionLabel;
     private UIDocument uiDocument;
     private List<VisualElement> slots = new List<VisualElement>();
     private PlayerInventory playerInventory;
@@ -48,18 +52,7 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
         }
 
         // Subscribe to the OnInventoryChanged event
-        playerInventory.OnInventoryChanged += UpdateInventoryUI;
-
-        UpdateInventoryUI();
-
-        highlightedElement = new VisualElement();
-        highlightedElement.AddToClassList("item-highlight");
-        highlightedElement.style.display = DisplayStyle.None;
-
-        draggedElement = new VisualElement();
-        draggedElement.AddToClassList("dragged-item");
-        draggedElement.style.visibility = Visibility.Hidden;
-        root.Add(draggedElement);
+        playerInventory.OnInventoryChanged += RebuildInventoryUI;
 
         // Add pointer events to each slot
         for (int i = 0; i < slots.Count; i++)
@@ -78,11 +71,11 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
         // Unsubscribe from the OnInventoryChanged event
         if (playerInventory != null)
         {
-            playerInventory.OnInventoryChanged -= UpdateInventoryUI;
+            playerInventory.OnInventoryChanged -= RebuildInventoryUI;
         }
     }
 
-    void UpdateInventoryUI()
+    void RebuildInventoryUI()
     {
         ClearAllSlots();
         ShowAllItems();
@@ -116,7 +109,7 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
             ItemStack currentItem = playerItems[i];
 
             VisualElement icon = slot.Q<VisualElement>("Icon");
-            icon.style.backgroundImage = currentItem.itemDefinition.itemSprite.texture;
+            icon.style.backgroundImage = currentItem.itemDefinition.ItemSprite.texture;
 
             if (currentItem.quantity > 1)
             {
@@ -148,7 +141,7 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
             ItemStack playerItem = playerItems[index];
 
             VisualElement icon = new VisualElement();
-            icon.style.backgroundImage = playerItem.itemDefinition.itemSprite.texture;
+            icon.style.backgroundImage = playerItem.itemDefinition.ItemSprite.texture;
             icon.AddToClassList("dragged-icon");
             draggedElement.Clear();
             draggedElement.Add(icon);
@@ -197,6 +190,7 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
                 if (isHovering)
                 {
                     isHovering = false;
+                    tooltip.style.visibility = Visibility.Hidden;
                 }
 
                 // Cancel any existing hover coroutine
@@ -215,7 +209,7 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
                         isHovering = true;
 
                         // Start a new hover coroutine
-                        hoverCoroutine = StartCoroutine(ShowTooltip(playerItems[hoveredSlotIndex]));
+                        hoverCoroutine = StartCoroutine(ShowTooltip(playerItems[hoveredSlotIndex].itemDefinition));
                     }
                 }
                 else 
@@ -269,18 +263,76 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
         }
     }
 
+    void CreateTooltip()
+    {
+        // Create a tooltip element
+        tooltip = new VisualElement();
+        tooltip.AddToClassList("tooltip-container");
+
+        VisualElement tooltipAbove = new VisualElement();
+        tooltipAbove.AddToClassList("tooltip-above");
+
+        tooltipNameLabel = new Label();
+        tooltipNameLabel.AddToClassList("tooltip-name-label");
+        tooltipTypeLabel = new Label();
+        tooltipTypeLabel.AddToClassList("tooltip-type-label");
+
+        VisualElement tooltipUnder = new VisualElement();
+        tooltipUnder.AddToClassList("tooltip-under");
+
+        tooltipDescriptionLabel = new Label();
+        tooltipDescriptionLabel.AddToClassList("tooltip-description-label");
+
+        VisualElement tooltipFooter = new VisualElement();
+        tooltipFooter.AddToClassList("tooltip-footer");
+
+        tooltipAbove.Add(tooltipNameLabel);
+        tooltipAbove.Add(tooltipTypeLabel);
+        tooltipUnder.Add(tooltipDescriptionLabel);
+        tooltip.Add(tooltipAbove);
+        tooltip.Add(tooltipUnder);
+        tooltip.Add(tooltipFooter);
+
+        uiDocument.rootVisualElement.Add(tooltip);
+        tooltip.style.visibility = Visibility.Hidden;
+    }
+
     // Coroutine to show the tooltip after a delay
-    IEnumerator ShowTooltip(ItemStack item)
+    IEnumerator ShowTooltip(ItemDefinition item)
     {
         yield return new WaitForSeconds(hoverDelay);
 
-        Debug.Log($"Selected: {item.itemDefinition.itemName} x{item.quantity}");
+        // Set the tooltip content
+        tooltipNameLabel.text = item.ItemName;
+        tooltipTypeLabel.text = item.ItemCategory.ToString();
+        tooltipDescriptionLabel.text = item.Description;
+
+        // Position the tooltip near the hovered slot
+        if (hoveredSlotIndex >= 0)
+        {
+            tooltip.style.left = slots[hoveredSlotIndex].worldBound.xMax - 10;
+            tooltip.style.top = slots[hoveredSlotIndex].worldBound.yMax;
+            tooltip.style.visibility = Visibility.Visible;
+        }
 
         hoverCoroutine = null;
     }
 
-    public void ShowInventory()
+    public override void ShowUI()
     {
+        if (!isCreated)
+        {
+            RebuildInventoryUI();
+            isCreated = true;
+            CreateTooltip();
+
+            // Create the dragged element and add it to the root visual element
+            draggedElement = new VisualElement();
+            draggedElement.AddToClassList("dragged-item");
+            draggedElement.style.visibility = Visibility.Hidden;
+            uiDocument.rootVisualElement.Add(draggedElement);
+        }
+
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         IClosableUI.openingUI = this;
 
@@ -296,20 +348,19 @@ public class UIHandler_inventory : MonoBehaviour, IClosableUI
     {
         uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         IClosableUI.openingUI = null;
-
-        playerController.EnableGameplayActions();
-
-        if (hotBarManager != null)
-        {
-            hotBarManager.Show();
-        }
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
         if (IClosableUI.openingUI != null)
         {
             HideInventory();
+            playerController.EnableGameplayActions();
+
+            if (hotBarManager != null)
+            {
+                hotBarManager.Show();
+            }
         }
     }
 }

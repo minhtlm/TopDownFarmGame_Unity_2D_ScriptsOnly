@@ -84,7 +84,7 @@ public class UIHandler_hotbar : MonoBehaviour
             VisualElement icon = slot.Q<VisualElement>("Item");
             if (icon != null)
             {
-                icon.style.backgroundImage = item.itemDefinition.itemSprite.texture;
+                icon.style.backgroundImage = item.itemDefinition.ItemSprite.texture;
             }
 
             Label label = slot.Q<Label>("Quantity");

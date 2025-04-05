@@ -80,7 +80,7 @@
     height: 260px;
 }
 
-.sell-button {
+.buy-button {
     height: 60px;
     width: 220px;
     background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_220x60.png?fileID=21300000&guid=f37ab7e637647594098b1bdf4ccc8173&type=3#Button_220x60");
@@ -96,7 +96,7 @@
 }
 
 .item-name {
-    height: 42px;
+    height: 58px;
     -unity-font-definition: initial;
     -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
     font-size: 42px;
@@ -105,24 +105,15 @@
 }
 
 .item-price {
-    height: 32px;
+    height: 42px;
     -unity-text-align: middle-center;
     -unity-font-definition: initial;
     -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
     color: rgb(255, 255, 255);
-    font-size: 32px;
+    font-size: 40px;
 }
 
-.item-quantity {
-    height: 26px;
-    -unity-font-definition: initial;
-    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
-    color: rgb(255, 251, 251);
-    font-size: 26px;
-    -unity-text-align: middle-center;
-}
-
-.icon-sprite {
+.item-icon {
     flex-grow: 0;
     height: 160px;
     margin-left: 50px;
@@ -130,7 +121,7 @@
 }
 
 .selected-item-container {
-    flex-grow: 1;
+    flex-grow: 0;
     height: 100px;
     width: 400px;
     flex-direction: row;
@@ -145,8 +136,8 @@
 }
 
 .selected-item-name {
-    height: 30px;
-    font-size: 30px;
+    height: 28px;
+    font-size: 28px;
     -unity-font-definition: initial;
     -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
     color: rgb(255, 255, 255);
@@ -155,9 +146,9 @@
 }
 
 .selected-item-price {
-    height: 20px;
+    height: 24px;
+    font-size: 24px;
     align-self: auto;
-    font-size: 20px;
     color: rgb(207, 207, 207);
     -unity-font-definition: initial;
     -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
@@ -205,11 +196,11 @@
     background-image: none;
 }
 
-.total-sell-button {
+.pay-button {
     height: 60px;
     width: 320px;
     margin: 0 40px 4px 40px;
-    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_320x60.png?fileID=21300000&guid=2d29d34e735e07048ade861532423aab&type=3#Button_320x60");
+    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_320x60.png");
     background-color: transparent;
     -unity-font-definition: initial;
     -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
@@ -221,12 +212,3 @@
     flex-grow: 1;
 }
 
-.empty-inventory-label {
-    color: rgb(255, 255, 255);
-    font-size: 32px;
-    flex-grow: 1;
-    margin-top: 64px;
-    -unity-text-align: middle-center;
-    -unity-font-definition: initial;
-    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
-}

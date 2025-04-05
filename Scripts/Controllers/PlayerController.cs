@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private TreeController tree;
     private IDestructible currentDestructible;
-    private ItemStack currentItem = null;
+    private ItemDefinition currentItem = null;
     private PlayerInventory playerInventory;
     [SerializeField] private UIHandler_inventory inventoryManager;
     [SerializeField] private UIHandler_hotbar hotBarManager;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         escapeAction.Enable();
 
         showingInventoryAction.performed += OnShowingInventoryPerformed;
-        useToolAction.performed += (UseTool);
+        useToolAction.performed += (UseItem);
         interactAction.performed += (OnInteraction);
         hotKeyAction.performed += OnHotkeyPerformed;
         escapeAction.performed += (OnEscapePressed);
@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
     void OnDisable()
     {
         showingInventoryAction.performed -= OnShowingInventoryPerformed;
-        useToolAction.performed -= (UseTool);
+        useToolAction.performed -= (UseItem);
         interactAction.performed -= (OnInteraction);
         hotKeyAction.performed -= OnHotkeyPerformed;
         escapeAction.performed -= (OnEscapePressed);
@@ -98,15 +98,6 @@ public class PlayerController : MonoBehaviour
             Set_Look(new Animator[] { animator, hairAnimator, toolAnimator });
             Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (playerInventory == null)
-            {
-                playerInventory = PlayerInventory.Instance;
-            }
-            playerInventory.AddMoney(100);
-        }
     }
 
     void FixedUpdate()
@@ -125,7 +116,7 @@ public class PlayerController : MonoBehaviour
     // Shake the tree by Animation event
     void OnInteractAnimation()
     {
-        if (currentDestructible != null && currentDestructible.CanInteract(currentItem.itemDefinition.itemName))
+        if (currentDestructible != null && currentDestructible.CanInteract(currentItem.ItemName))
         {
             currentDestructible.OnInteractAnimation();
         }
@@ -135,6 +126,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // When the player interacts with an interactable object (key: E)
     void OnInteraction(InputAction.CallbackContext context)
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + new Vector3(0, 0.5f, 0), 1.0f, LayerMask.GetMask("Interactable"));
@@ -154,18 +146,20 @@ public class PlayerController : MonoBehaviour
         }
     }   
 
-    void UseTool(InputAction.CallbackContext context)
+    // When the player uses a tool (key: F)
+    void UseItem(InputAction.CallbackContext context)
     {
         // Check if the selected hotbar slot has the correct tool type
         if (playerInventory == null)
         {
             playerInventory = PlayerInventory.Instance;
+            if (playerInventory == null)
+            {
+                Debug.LogError("PlayerInventory not found");
+                return;
+            }
         }
-        if (playerInventory == null)
-        {
-            Debug.LogError("PlayerInventory not found");
-            return;
-        }
+        
         if (selectedHotbarSlot >= 0 && selectedHotbarSlot < playerInventory.GetItems().Count)
         {
             ItemStack item = playerInventory.GetItem(selectedHotbarSlot);
@@ -176,31 +170,50 @@ public class PlayerController : MonoBehaviour
             }
             else 
             {
-                currentItem = item;
+                currentItem = item.itemDefinition;
+            }
+
+            if (currentItem is ToolDefinition tool)
+            {
+                UseTool(tool);
+                Debug.Log("Using tool: " + tool.ItemName);
+            }
+            else if (currentItem is ConsumableDefinition consumable)
+            {
+                if (consumable.UseItem())
+                {
+                    playerInventory.RemoveItem(currentItem, 1);
+                    Debug.Log("Using consumable: " + consumable.ItemName);
+                }
+                else
+                {
+                    Debug.Log("Cannot use consumable: " + consumable.ItemName);
+                }
             }
         }
+    }
 
+    void UseTool(ToolDefinition tool)
+    {
         // Stop movement during tool use
         moveInput = Vector2.zero;
         Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
 
         // Set the tool animation
-        string animTrigger = currentItem.itemDefinition.itemName + "Trigger";
         Set_Trigger(new Animator[] { animator, hairAnimator}, "axeTrigger");
-        Set_Trigger(new Animator[] { toolAnimator }, animTrigger);
+        Set_Trigger(new Animator[] { toolAnimator }, tool.AnimatorTrigger);
         isUsingTool = true;
 
         // Check if the tool can interact with the target
-        string targetLayer = currentItem.itemDefinition.targetLayer;
         Collider2D hit = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f),
-            new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask(targetLayer));
+            new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask(tool.TargetLayer));
         if (hit != null)
         {
             IDestructible destructible = hit.GetComponent<IDestructible>();
             if (destructible != null )
             {
                 currentDestructible = destructible;
-                destructible.Interact(currentItem.itemDefinition.itemName);
+                destructible.Interact(tool.ItemName);
             }
         } else
         {
@@ -212,7 +225,7 @@ public class PlayerController : MonoBehaviour
     {
         if (inventoryManager != null)
         {
-            inventoryManager.ShowInventory();
+            inventoryManager.ShowUI();
         } else
         {
             Debug.Log("InventoryManager is null");
@@ -263,7 +276,7 @@ public class PlayerController : MonoBehaviour
             ItemStack item = playerInventory.GetItem(slotSelectedIndex);
             if (item != null)
             {
-                Debug.Log("Selected item: " + item.itemDefinition.itemName);
+                Debug.Log("Selected item: " + item.itemDefinition.ItemName);
             }
         }
     }

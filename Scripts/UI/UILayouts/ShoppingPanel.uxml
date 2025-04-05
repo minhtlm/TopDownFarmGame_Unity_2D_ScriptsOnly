@@ -1,16 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Scripts/UI/UIStyles/TradingPanel.uss?fileID=7433441132597879392&amp;guid=7a8db074c53196345be4db74f6fb9ee7&amp;type=3#TradingPanel" />
-    <ui:VisualElement name="TradingPanelContainer" class="shop-panel-container">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/ShoppingPanel.uss?fileID=7433441132597879392&amp;guid=179f56a2702ac8e43bbbd7c6b55d4e4b&amp;type=3#ShoppingPanel" />
+    <ui:VisualElement name="ShoppingPanelContainer" class="shop-panel-container">
         <ui:VisualElement name="TitlePanel" class="title-panel">
-            <ui:Label tabindex="-1" text="Trading Post" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title-label" />
+            <ui:Label tabindex="-1" text="24/7 Mart" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title-label" />
         </ui:VisualElement>
         <ui:VisualElement name="MainPanel" class="main-panel">
-            <ui:VisualElement name="TradingInventory" class="shop-inventory">
+            <ui:VisualElement name="ShopInventory" class="shop-inventory">
                 <ui:ScrollView name="ItemsScrollView" class="items-scroll-view" />
             </ui:VisualElement>
             <ui:VisualElement name="SummaryPanel" class="summary-panel">
                 <ui:VisualElement name="SelectedItems" class="selected-items">
-                    <ui:ScrollView name="SelectedItemsScrollView" class="selected-items-scroll-view" />
+                    <ui:ScrollView name="SelectedItemsScrollView" class="selected-items-scroll-view"/>
                 </ui:VisualElement>
                 <ui:VisualElement name="TotalPanel" class="total-panel" />
             </ui:VisualElement>

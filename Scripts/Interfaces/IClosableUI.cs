@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public interface IClosableUI
+public abstract class IClosableUI : MonoBehaviour
 {
     public static IClosableUI openingUI = null;
-    void CloseUI();
+    public abstract void ShowUI();
+    public abstract void CloseUI();
 }
