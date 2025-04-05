@@ -19,6 +19,8 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float statsDecreaseInterval = 5f;
     [SerializeField] private float healthDecreaseAmountFromHunger = 2f;
     [SerializeField] private float healthDecreaseAmountFromThirst = 3f;
+    [SerializeField] private float healthIncreaseAmountFromHunger = 2f;
+    [SerializeField] private float healthIncreaseAmountFromThirst = 3f;
     [SerializeField] private float hungerDecreaseAmount = 3f;
     [SerializeField] private float thirstDecreaseAmount = 5f;
 
@@ -51,16 +53,29 @@ public class PlayerStats : MonoBehaviour
         while (health > 0f)
         {
             yield return new WaitForSeconds(statsDecreaseInterval);
+
+            // Decrease hunger and thirst over time
             hunger = Mathf.Max(hunger - hungerDecreaseAmount, 0f);
             thirst = Mathf.Max(thirst - thirstDecreaseAmount, 0f);
 
+            // Decrease health if hunger or thirst is 0
+            // Increase if hunger or thirst is above 50 and both are not 0
             if (hunger <= 0f)
             {
                 health = Mathf.Max(health - healthDecreaseAmountFromHunger, 0f);
             }
+            else if (hunger > 50f)
+            {
+                health = Mathf.Min(health + healthIncreaseAmountFromHunger, 100f);
+            }
+
             if (thirst <= 0f)
             {
                 health = Mathf.Max(health - healthDecreaseAmountFromThirst, 0f);
+            }
+            else if (thirst > 50f)
+            {
+                health = Mathf.Min(health + healthIncreaseAmountFromThirst, 100f);
             }
 
             OnStatsChanged?.Invoke(); // Trigger the event when stats change

@@ -274,7 +274,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
             ItemStack item = playerInventory.GetItem(slotSelectedIndex);
-            if (item != null)
+            if (!playerInventory.IsEmptySlot(slotSelectedIndex))
             {
                 Debug.Log("Selected item: " + item.itemDefinition.ItemName);
             }

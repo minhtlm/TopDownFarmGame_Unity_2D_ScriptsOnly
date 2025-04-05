@@ -76,21 +76,20 @@ public class UIHandler_hotbar : MonoBehaviour
 
         for (int i = 0; i < hotBarSlots.Count && i < playerItems.Count; i++)
         {
-            if (playerItems[i] == null) continue;
+            if (playerInventory.IsEmptySlot(i)) continue;
 
+            ItemStack currentItem = playerItems[i];
             VisualElement slot = hotBarSlots[i];
-            ItemStack item = playerItems[i];
-
             VisualElement icon = slot.Q<VisualElement>("Item");
             if (icon != null)
             {
-                icon.style.backgroundImage = item.itemDefinition.ItemSprite.texture;
+                icon.style.backgroundImage = currentItem.itemDefinition.ItemSprite.texture;
             }
 
             Label label = slot.Q<Label>("Quantity");
-            if (label != null && item.quantity > 1)
+            if (label != null && currentItem.quantity > 1)
             {
-                label.text = item.quantity.ToString();
+                label.text = currentItem.quantity.ToString();
             }
         }
     }

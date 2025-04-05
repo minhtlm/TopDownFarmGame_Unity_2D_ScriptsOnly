@@ -61,14 +61,13 @@ public class PlayerInventory : MonoBehaviour
         // Check if the item is already in the inventory
         for (int i = 0; i < items.Count; i++)
         {
-            ItemStack item = items[i];
-
-            if (item == null) // Find the first empty slot
+            if (IsEmptySlot(i)) // Find the first empty slot
             {
                 if (firstEmptySlot == -1) firstEmptySlot = i;
                 continue; // Skip null items
             }
 
+            ItemStack item = items[i];
             if (item.itemDefinition == itemToAdd)
             {
                 item.quantity += amount;
@@ -108,7 +107,9 @@ public class PlayerInventory : MonoBehaviour
                 items[i].quantity -= amount;
                 if (items[i].quantity <= 0)
                 {
+                    // items.RemoveAt(i);
                     items[i] = null; // Remove the item from the inventory
+                    Debug.Log("Is null: " + (items[i]==null));
                 }
 
                 OnInventoryChanged?.Invoke();
@@ -134,6 +135,13 @@ public class PlayerInventory : MonoBehaviour
         }
 
         return false;
+    }
+
+    public bool IsEmptySlot(int index)
+    {
+        if (index < 0 || index >= items.Count) return true; // Check if the index is invalid
+
+        return items[index] == null || items[index].itemDefinition == null; // Check if the slot is empty
     }
 
     public void SwapItems(int sourceIndex, int targetIndex)

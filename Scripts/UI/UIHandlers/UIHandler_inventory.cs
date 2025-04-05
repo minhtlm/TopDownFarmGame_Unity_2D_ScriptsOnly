@@ -104,12 +104,15 @@ public class UIHandler_inventory : IClosableUI
 
         for (int i = 0; i < playerItems.Count && i < slots.Count; i++)
         {
-            if (playerItems[i] == null) continue;
-            VisualElement slot = slots[i];
+            if (playerInventory.IsEmptySlot(i)) continue;
+            
             ItemStack currentItem = playerItems[i];
-
+            VisualElement slot = slots[i];
             VisualElement icon = slot.Q<VisualElement>("Icon");
-            icon.style.backgroundImage = currentItem.itemDefinition.ItemSprite.texture;
+            if (icon != null)
+            {
+                icon.style.backgroundImage = currentItem.itemDefinition.ItemSprite.texture;
+            }
 
             if (currentItem.quantity > 1)
             {
@@ -170,6 +173,9 @@ public class UIHandler_inventory : IClosableUI
         if (draggedItemIndex >= 0)
         {
             isHovering = false;
+            isDragging = true;
+            tooltip.style.visibility = Visibility.Hidden;
+            
             draggedElement.style.left = pointerPosition.x - draggedElement.layout.width / 2;
             draggedElement.style.top = pointerPosition.y - draggedElement.layout.height / 2;
 
@@ -203,7 +209,7 @@ public class UIHandler_inventory : IClosableUI
                 if (newHoveredSlotIndex >= 0)
                 {
                     List<ItemStack> playerItems = playerInventory.GetItems();
-                    if (newHoveredSlotIndex < playerItems.Count && playerItems[newHoveredSlotIndex] != null)
+                    if (newHoveredSlotIndex < playerItems.Count && !playerInventory.IsEmptySlot(newHoveredSlotIndex))
                     {
                         hoveredSlotIndex = newHoveredSlotIndex;
                         isHovering = true;
@@ -228,14 +234,16 @@ public class UIHandler_inventory : IClosableUI
             {
                 playerInventory.SwapItems(draggedItemIndex, targetSlotIndex);
             }
-            draggedElement.style.visibility = Visibility.Hidden;
-            slots[draggedItemIndex].Q<VisualElement>("Icon").style.visibility = Visibility.Visible;
-            slots[draggedItemIndex].Q<VisualElement>("Quantity").style.visibility = Visibility.Visible;
-
-            draggedItemIndex = -1;
-            targetSlotIndex = -1;
-            isHovering = false;
         }
+
+        draggedElement.style.visibility = Visibility.Hidden;
+        slots[draggedItemIndex].Q<VisualElement>("Icon").style.visibility = Visibility.Visible;
+        slots[draggedItemIndex].Q<VisualElement>("Quantity").style.visibility = Visibility.Visible;
+
+        draggedItemIndex = -1;
+        targetSlotIndex = -1;
+        isHovering = false;
+        isDragging = false;
     }
 
     void UpdateTargetSlotIndex()
