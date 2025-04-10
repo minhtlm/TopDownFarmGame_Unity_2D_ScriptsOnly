@@ -7,21 +7,12 @@ using UnityEngine;
 public class DoorController : MonoBehaviour, IInteractable
 {
     [SerializeField] private Vector2 teleportPosition;
-    private GameObject player;
-
-    private void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
 
     public void OnInteract()
     {
-        if (player != null) 
-        {
-            UIHandler_screenFader uiScreenFader = UIHandler_screenFader.Instance;
-            StartCoroutine(uiScreenFader.FadeTransition(() => {
-                player.transform.position = teleportPosition;
-            }));
-        }
+        UIHandler_screenFader uiScreenFader = UIHandler_screenFader.Instance;
+        StartCoroutine(uiScreenFader.FadeTransition(() => {
+            PlayerController.Instance.transform.position = teleportPosition;
+        }));
     }
 }

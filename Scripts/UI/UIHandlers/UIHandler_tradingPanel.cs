@@ -15,7 +15,6 @@ public class UIHandler_tradingPanel : IClosableUI
     private List<ItemStack> playerItems = new List<ItemStack>();
     private Dictionary<string, VisualElement> playerItemElements = new Dictionary<string, VisualElement>();
     private Dictionary<string, VisualElement> selectedItemElements = new Dictionary<string, VisualElement>();
-    [SerializeField] private PlayerController playerController;
     [SerializeField] private UIHandler_hotbar hotBarManager;
 
     // Start is called before the first frame update
@@ -335,13 +334,12 @@ public class UIHandler_tradingPanel : IClosableUI
         }
 
         PlayerStats playerStats = PlayerStats.Instance;
-        PlayerInventory playerInventory = PlayerInventory.Instance;
-        if (playerStats != null && playerInventory != null)
+        if (playerStats != null)
         {
             playerStats.AddMoney(totalPrice);
             foreach (ItemStack item in selectedItems)
             {
-                playerInventory.RemoveItem(item.itemDefinition, item.quantity);
+                PlayerInventory.Instance.RemoveItem(item.itemDefinition, item.quantity);
             }
             CloseUI();
         }   
@@ -398,7 +396,7 @@ public class UIHandler_tradingPanel : IClosableUI
         RebuildTradingPanel();
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         IClosableUI.openingUI = this;
-        playerController.DisableGameplayActions();
+        PlayerController.Instance.DisableGameplayActions();
 
         if (hotBarManager != null)
         {
@@ -422,7 +420,7 @@ public class UIHandler_tradingPanel : IClosableUI
         if (IClosableUI.openingUI != null)
         {
             HideTradingPanel();
-            playerController.EnableGameplayActions();
+            PlayerController.Instance.EnableGameplayActions();
         }
     }
 }

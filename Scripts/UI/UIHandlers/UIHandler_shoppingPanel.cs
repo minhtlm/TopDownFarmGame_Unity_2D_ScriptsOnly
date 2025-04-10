@@ -14,7 +14,6 @@ public class UIHandler_shoppingPanel : IClosableUI
     private Dictionary<string, TextField> selectedItemsTextField = new Dictionary<string, TextField>();
     private List<ItemStack> selectedItems = new List<ItemStack>();
     [SerializeField] private List<ItemStack> items = new List<ItemStack>();
-    [SerializeField] private PlayerController playerController;
     [SerializeField] private UIHandler_hotbar hotbarUIHandler;
 
     // Start is called before the first frame update
@@ -288,7 +287,7 @@ public class UIHandler_shoppingPanel : IClosableUI
 
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         IClosableUI.openingUI = this;
-        playerController.DisableGameplayActions();
+        PlayerController.Instance.DisableGameplayActions();
 
         if (hotbarUIHandler != null)
         {
@@ -307,7 +306,7 @@ public class UIHandler_shoppingPanel : IClosableUI
         if (IClosableUI.openingUI != null)
         {
             HideShoppingPanel();
-            playerController.EnableGameplayActions();
+            PlayerController.Instance.EnableGameplayActions();
             if (hotbarUIHandler != null)
             {
                 hotbarUIHandler.Show();

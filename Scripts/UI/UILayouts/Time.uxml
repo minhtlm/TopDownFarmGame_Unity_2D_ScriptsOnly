@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/Time.uss?fileID=7433441132597879392&amp;guid=d3f2164ed909ff841860d56091ba0443&amp;type=3#Time" />
+    <ui:VisualElement name="TimeContainer" class="time-container">
+        <ui:Label tabindex="-1" text="08:10 am" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TimeLabel" class="time-label" />
+    </ui:VisualElement>
+</ui:UXML>

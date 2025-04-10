@@ -12,22 +12,10 @@ public class UIHandler_hotbar : MonoBehaviour
 
     public List<VisualElement> hotBarSlots = new List<VisualElement>();
 
-    void Awake()
-    {
-        uiDocument = GetComponent<UIDocument>();
-        if (playerInventory == null)
-        {
-            playerInventory = PlayerInventory.Instance;
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-        if (uiDocument == null)
-        {
-            uiDocument = GetComponent<UIDocument>();
-        }
+        uiDocument = GetComponent<UIDocument>();
         VisualElement root = uiDocument.rootVisualElement;
         VisualElement hotBarContainer = root.Q<VisualElement>("HotBarContainer");
         if (hotBarContainer != null)
@@ -43,12 +31,15 @@ public class UIHandler_hotbar : MonoBehaviour
             return;
         }
 
-        SetSelectedSlot(initialSelectedSlotIndex);
-
+        playerInventory = PlayerInventory.Instance;
         if (playerInventory == null)
         {
-            playerInventory = PlayerInventory.Instance;
+            Debug.LogError("PlayerInventory not found");
+            return;
         }
+
+        SetSelectedSlot(initialSelectedSlotIndex);
+
         playerInventory.OnInventoryChanged += UpdateHotBarUI;
 
         UpdateHotBarUI();
@@ -56,10 +47,7 @@ public class UIHandler_hotbar : MonoBehaviour
 
     void OnDestroy()
     {
-        if (playerInventory != null)
-        {
-            playerInventory.OnInventoryChanged -= UpdateHotBarUI;
-        }
+        playerInventory.OnInventoryChanged -= UpdateHotBarUI;
     }
 
     void UpdateHotBarUI()
@@ -68,10 +56,6 @@ public class UIHandler_hotbar : MonoBehaviour
 
         ClearAllSlots();
 
-        if (playerInventory == null)
-        {
-            playerInventory = PlayerInventory.Instance;
-        }
         List<ItemStack> playerItems = playerInventory.GetItems();
 
         for (int i = 0; i < hotBarSlots.Count && i < playerItems.Count; i++)

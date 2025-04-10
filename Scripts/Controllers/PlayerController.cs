@@ -6,6 +6,8 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
+
     private int selectedHotbarSlot = 0;
     private float speed = 5.0f;
     private bool isUsingTool = false;
@@ -34,6 +36,15 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
         DontDestroyOnLoad(gameObject);
     }
 
@@ -81,6 +92,13 @@ public class PlayerController : MonoBehaviour
         if (hotBarManager == null)
         {
             hotBarManager = FindObjectOfType<UIHandler_hotbar>();
+        }
+
+        playerInventory = PlayerInventory.Instance;
+        if (playerInventory == null)
+        {
+            Debug.LogError("PlayerInventory not found");
+            return;
         }
     }
 
@@ -148,18 +166,7 @@ public class PlayerController : MonoBehaviour
 
     // When the player uses a tool (key: F)
     void UseItem(InputAction.CallbackContext context)
-    {
-        // Check if the selected hotbar slot has the correct tool type
-        if (playerInventory == null)
-        {
-            playerInventory = PlayerInventory.Instance;
-            if (playerInventory == null)
-            {
-                Debug.LogError("PlayerInventory not found");
-                return;
-            }
-        }
-        
+    { 
         if (selectedHotbarSlot >= 0 && selectedHotbarSlot < playerInventory.GetItems().Count)
         {
             ItemStack item = playerInventory.GetItem(selectedHotbarSlot);
@@ -176,14 +183,12 @@ public class PlayerController : MonoBehaviour
             if (currentItem is ToolDefinition tool)
             {
                 UseTool(tool);
-                Debug.Log("Using tool: " + tool.ItemName);
             }
             else if (currentItem is ConsumableDefinition consumable)
             {
                 if (consumable.UseItem())
                 {
                     playerInventory.RemoveItem(currentItem, 1);
-                    Debug.Log("Using consumable: " + consumable.ItemName);
                 }
                 else
                 {
@@ -264,15 +269,6 @@ public class PlayerController : MonoBehaviour
                 hotBarManager.SetSelectedSlot(slotSelectedIndex);
             }
 
-            if (playerInventory == null)
-            {
-                playerInventory = PlayerInventory.Instance;
-                if (playerInventory == null)
-                {
-                    Debug.LogError("PlayerInventory not found");
-                    return;
-                }
-            }
             ItemStack item = playerInventory.GetItem(slotSelectedIndex);
             if (!playerInventory.IsEmptySlot(slotSelectedIndex))
             {

@@ -11,7 +11,6 @@ public class UIHandler_screenFader : MonoBehaviour
     private CinemachineVirtualCamera virtualCamera;
     private float originalDamping;
     private CinemachineFramingTransposer transposer;
-    [SerializeField] private PlayerController playerController;
 
     public static UIHandler_screenFader Instance { get; private set; }
 
@@ -44,13 +43,13 @@ public class UIHandler_screenFader : MonoBehaviour
     void FadeIn()
     {
         screenFader.AddToClassList("show");
-        playerController.DisableGameplayActions();
+        PlayerController.Instance.DisableGameplayActions();
     }
 
     void FadeOut()
     {
         screenFader.RemoveFromClassList("show");
-        playerController.EnableGameplayActions();
+        PlayerController.Instance.EnableGameplayActions();
     }
 
     public IEnumerator FadeTransition(System.Action teleportAction)

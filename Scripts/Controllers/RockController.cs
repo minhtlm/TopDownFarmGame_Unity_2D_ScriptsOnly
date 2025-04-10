@@ -33,11 +33,6 @@ public class RockController : MonoBehaviour, IDestructible
         }
     }
 
-    public Transform GetTransform()
-    {
-        return transform;
-    }
-
     public void HitRock()
     {
         if (isMined) return;

@@ -1,0 +1,25 @@
+.time-container {
+    flex-grow: 0;
+    height: 64px;
+    width: auto;
+    flex-wrap: nowrap;
+    align-self: flex-end;
+    padding-right: 10px;
+}
+
+.time-label {
+    flex-grow: 1;
+    font-size: 32px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/PatrickHand-Regular.ttf?fileID=12800000&guid=0ece6bd8b210e834c9b368e777f58d98&type=3#PatrickHand-Regular");
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-right;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}

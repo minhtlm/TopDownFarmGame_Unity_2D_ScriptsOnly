@@ -25,8 +25,6 @@ public class UIHandler_inventory : IClosableUI
     private List<VisualElement> slots = new List<VisualElement>();
     private PlayerInventory playerInventory;
     [SerializeField] private UIHandler_hotbar hotBarManager;
-    [SerializeField] private PlayerController playerController;
-
 
     // Start is called before the first frame update
     void Start()
@@ -41,14 +39,11 @@ public class UIHandler_inventory : IClosableUI
             slots.Add(slot);
         }
 
+        playerInventory = PlayerInventory.Instance;
         if (playerInventory == null)
         {
-            playerInventory = PlayerInventory.Instance;
-            if (playerInventory == null)
-            {
-                Debug.LogError("PlayerInventory instance not found!");
-                return;
-            }
+            Debug.LogError("PlayerInventory instance not found!");
+            return;
         }
 
         // Subscribe to the OnInventoryChanged event
@@ -69,10 +64,7 @@ public class UIHandler_inventory : IClosableUI
     void OnDestroy()
     {
         // Unsubscribe from the OnInventoryChanged event
-        if (playerInventory != null)
-        {
-            playerInventory.OnInventoryChanged -= RebuildInventoryUI;
-        }
+        playerInventory.OnInventoryChanged -= RebuildInventoryUI;
     }
 
     void RebuildInventoryUI()
@@ -344,7 +336,7 @@ public class UIHandler_inventory : IClosableUI
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
         IClosableUI.openingUI = this;
 
-        playerController.DisableGameplayActions();
+        PlayerController.Instance.DisableGameplayActions();
 
         if (hotBarManager != null)
         {
@@ -363,7 +355,7 @@ public class UIHandler_inventory : IClosableUI
         if (IClosableUI.openingUI != null)
         {
             HideInventory();
-            playerController.EnableGameplayActions();
+            PlayerController.Instance.EnableGameplayActions();
 
             if (hotBarManager != null)
             {
