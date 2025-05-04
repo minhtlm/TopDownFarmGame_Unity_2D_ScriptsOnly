@@ -52,7 +52,7 @@ public class UIHandler_screenFader : MonoBehaviour
         PlayerController.Instance.EnableGameplayActions();
     }
 
-    public IEnumerator FadeTransition(System.Action teleportAction)
+    public IEnumerator FadeTransition(System.Action teleportAction, System.Action afterFadeAction = null)
     {
         // Set damping = 0 to make camera move instantly
         transposer.m_XDamping = 0;
@@ -70,5 +70,11 @@ public class UIHandler_screenFader : MonoBehaviour
         // Reset damping
         transposer.m_XDamping = originalDamping;
         transposer.m_YDamping = originalDamping;
+
+        // Executing the afterFadeAction
+        if (afterFadeAction != null)
+        {
+            afterFadeAction.Invoke();
+        }
     }
 }

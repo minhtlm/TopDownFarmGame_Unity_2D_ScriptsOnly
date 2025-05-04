@@ -1,0 +1,94 @@
+.container {
+    flex-grow: 0;
+    align-self: center;
+    width: 166px;
+    height: 500px;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    top: 25%;
+}
+
+.fishing-rod-container {
+    flex-grow: 0;
+    width: 60px;
+    height: 500px;
+    margin-right: 16px;
+}
+
+.fishing-bar {
+    flex-grow: 0;
+    flex-direction: column-reverse;
+    border-color: rgb(30, 65, 77);
+    border-width: 2px;
+    border-radius: 10px;
+    width: 60px;
+    height: 500px;
+    background-color: rgb(110, 235, 254);
+}
+
+.progress-bar-container {
+    flex-grow: 0;
+    border-color: rgb(30, 65, 77);
+    border-width: 2px;
+    border-radius: 5px;
+    background-color: rgb(30, 65, 77);
+    width: 30px;
+    height: 500px;
+    flex-direction: column-reverse;
+}
+
+.fishing-rod {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Sprites/UI/UIFishingMinigame/FishingMinigameUI.png?fileID=21300000&guid=6f1ec6e0cda07574daa0ddaa7d76c38c&type=3#FishingMinigameUI");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.rotate-item {
+    flex-grow: 1;
+    position: absolute;
+    background-image: url("project://database/Assets/Sprites/UI/UIFishingMinigame/fishingRod_rotateItem.png?fileID=21300000&guid=3ea1fd901503d7640a825aa1e6e24929&type=3#fishingRod_rotateItem");
+    -unity-background-scale-mode: scale-to-fit;
+    width: 10px;
+    height: 30px;
+    top: 386px;
+    left: 12px;
+}
+
+.player-bar {
+    flex-grow: 0;
+    width: 56px;
+    height: 80px;
+    background-color: rgb(202, 249, 255);
+    border-radius: 8px;
+    position: absolute;
+    bottom: 0px;
+}
+
+.fish-icon {
+    flex-grow: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIFishingMinigame/Clownfish.png?fileID=21300000&guid=f64fa7224a84c8743907266e59194918&type=3#Clownfish");
+    -unity-background-scale-mode: scale-to-fit;
+    position: absolute;
+    height: 50px;
+    width: 56px;
+    bottom: 0px;
+}
+
+.progress-bar {
+    flex-grow: 0;
+    background-color: rgba(251, 105, 73, 0);
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-self: auto;
+    border-radius: 5px;
+    height: 42px;
+    width: 26px;
+}
+
+.progress-value {
+    flex-grow: 1;
+    background-color: rgb(251, 105, 73);
+    border-radius: 2px;
+}
