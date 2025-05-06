@@ -1,0 +1,14 @@
+.popup-label {
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    -unity-font-definition: initial;
+    font-size: 40px;
+    color: rgb(208, 165, 42);
+    -unity-text-outline-width: 0.8px;
+    -unity-text-outline-color: rgb(103, 75, 60);
+    text-shadow: 2px 2px 3px rgb(0, 0, 0);
+    height: auto;
+    width: auto;
+    position: absolute;
+    transform-origin: bottom;
+    translate: -50% 0;
+}

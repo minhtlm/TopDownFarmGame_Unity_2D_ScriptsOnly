@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -12,12 +13,13 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     private VisualElement fishingBar;
     private VisualElement playerBar;
     private VisualElement progressBar;
+    private Label endingPopupLabel;
     private float fishingBarMinY = 0.0f;
     private float fishIconMaxY;
-    private float fishIconY;
+    private float fishIconY = 0.0f;
     private float fishHeight;
     private float playerBarHeight;
-    private float playerBarY;
+    private float playerBarY = 0.0f;
     private float playerBarMaxY;
     private float velocity = 0.0f;
     private float catchProgress = 0.0f;
@@ -26,25 +28,26 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     private const float liftForce = 400.0f;
     private const float gravity = -100.0f;
     private bool isLifting = false;
+    private bool isActive = false;
     private Tween fishTween;
+    private Sequence shakeUISeq;
+    
     [SerializeField] private float progressChangeSpeed = 0.1f;
     [SerializeField] private float fishSpeed = 100.0f;
     [SerializeField] private float easyFishMovingPercent = 0.7f;
     [SerializeField] private float fishMovingMinDistance = 100.0f;
     [SerializeField] private InputAction catchFishAction;
 
+    public event Action FishingFinished; // Event to notify when fishing is finished
+
     void OnEnable()
     {
-        catchFishAction.Enable();
-        catchFishAction.performed += OnCatchPerformed;
-        catchFishAction.canceled += OnCatchCanceled;
+        EnableFishingActions();
     }
 
     void OnDisable()
     {
-        catchFishAction.Disable();
-        catchFishAction.performed -= OnCatchPerformed;
-        catchFishAction.canceled -= OnCatchCanceled;
+        DisableUI();
     }
 
     void Start()
@@ -54,23 +57,24 @@ public class UIHandler_FishingMinigame : MonoBehaviour
         fishingBar = root.Q<VisualElement>("FishingBar");
         playerBar = root.Q<VisualElement>("PlayerBar");
         progressBar = root.Q<VisualElement>("ProgressBar");
+        endingPopupLabel = root.Q<Label>("EndingPopup");
 
-        WaitUntilLayoutReady();
+        HideFishingUI(); // Hide the fishing UI at the start
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdatePlayerBar();
-        UpdateProgressBar();
+        if (isActive)
+        {
+            UpdatePlayerBar();
+            UpdateProgressBar();
+        }
     }
 
     void OnDestroy()
     {
-        if (fishTween != null)
-        {
-            fishTween.Kill();
-        }
+        ResetFishTween();
     }
 
     void OnCatchPerformed(InputAction.CallbackContext context)
@@ -86,18 +90,11 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     }
 
     // This method waits until the layout is ready
-    private void WaitUntilLayoutReady()
+    private void AfterLayoutReady()
     {
         float fishingBarHeight = fishingBar.resolvedStyle.height;
         fishHeight = fishIcon.resolvedStyle.height;
         playerBarHeight = playerBar.resolvedStyle.height;
-
-        // Wait until the layout is ready
-        if (float.IsNaN(fishingBarHeight) || float.IsNaN(fishHeight) || float.IsNaN(playerBarHeight))
-        {
-            root.schedule.Execute(WaitUntilLayoutReady).ExecuteLater(1);
-            return;
-        }
 
         fishIconMaxY = fishingBarHeight - fishHeight;
         playerBarMaxY = fishingBarHeight - playerBarHeight;
@@ -107,19 +104,21 @@ public class UIHandler_FishingMinigame : MonoBehaviour
 
     private void MoveFishToNextPosition()
     {
-        fishTween?.Kill(); // Kill the previous fish tween if it exists
+        if (!isActive) return; // Do not move fish if the fishing UI is not active
+
+        ResetFishTween();
 
         float currentY = fishIcon.resolvedStyle.bottom;
 
         // Generate a random target Y position within the fishing bar range, ensuring it's not too close to the current position
         float targetY;
         do {
-            targetY = Random.Range(fishingBarMinY, fishIconMaxY);
+            targetY = UnityEngine.Random.Range(fishingBarMinY, fishIconMaxY);
         } while (Mathf.Abs(targetY - currentY) < fishMovingMinDistance);
         
         float distance = Mathf.Abs(targetY - currentY);
         float duration = distance / fishSpeed;
-        Ease easing = Random.value < easyFishMovingPercent ? Ease.Linear : Ease.OutQuad;
+        Ease easing = UnityEngine.Random.value < easyFishMovingPercent ? Ease.Linear : Ease.OutQuad;
 
         // Move the fish and loop the movement
         fishTween = DOTween.To(
@@ -133,6 +132,59 @@ public class UIHandler_FishingMinigame : MonoBehaviour
         )
         .SetEase(easing)
         .OnComplete(() => MoveFishToNextPosition());
+    }
+
+    void ShakeUI()
+    {
+        Vector2 currentScale = Vector2.one;
+
+        if (shakeUISeq != null)
+        {
+            shakeUISeq.Kill();
+            shakeUISeq = null;
+        }
+
+        shakeUISeq = DOTween.Sequence();
+
+        shakeUISeq.Append(
+            DOTween.To(
+                () => 0f,
+                t => {
+                    float offsetX = UnityEngine.Random.Range(-2f, 2f);
+                    float offsetY = UnityEngine.Random.Range(-2f, 2f);
+                    root.style.translate = new Translate(offsetX, offsetY); 
+                },
+                1f,
+                1f
+            )
+            .SetEase(Ease.Linear)
+        );
+
+        shakeUISeq.Join(
+            DOTween.To(
+                () => currentScale,
+                x => {
+                    currentScale = x;
+                    endingPopupLabel.style.scale = currentScale;
+                },
+                currentScale * 3.0f,
+                1f
+            )
+            .SetEase(Ease.OutBack)
+        );
+        
+        shakeUISeq.OnComplete(() => {
+
+            // Reset the UI elements after shaking
+            root.style.translate = new Translate(0, 0);
+            endingPopupLabel.style.scale = Vector2.one;
+
+            shakeUISeq.Kill(); // Kill the sequence after completion
+            shakeUISeq = null;
+
+            FishingFinished?.Invoke(); // Invoke the fishing finished event
+            HideFishingUI();
+        });
     }
 
     void UpdatePlayerBar()
@@ -170,15 +222,79 @@ public class UIHandler_FishingMinigame : MonoBehaviour
 
         progressBar.style.height = Length.Percent(catchProgress * 100); // Update progress bar height
 
-        if (catchProgress >= 1.0f)
+        if (catchProgress >= 1.0f) // Fish caught successfully
         {
-            // Fish caught successfully
-            Debug.Log("Fish Caught!");
+            DisableUI(); // Disable the fishing UI
+
+            endingPopupLabel.text = "Fish Caught!";
+            ShakeUI();
         }
-        else if (catchProgress <= 0.0f)
+        else if (catchProgress <= 0.0f) // Fish escaped
         {
-            // Fish escaped
-            Debug.Log("Fish Escaped!");
+            DisableUI();
+
+            endingPopupLabel.text = "Fish Escaped!";
+            ShakeUI();
         }
+    }
+
+    void ResetFishTween()
+    {
+        if (fishTween != null)
+        {
+            fishTween.Kill();
+            fishTween = null;
+        }
+    }
+
+    void EnableFishingActions()
+    {
+        catchFishAction.Enable();
+        catchFishAction.performed += OnCatchPerformed;
+        catchFishAction.canceled += OnCatchCanceled;
+    }
+
+    void DisableUI()
+    {
+        isActive = false; // Disable the Update loop
+
+        // Disable the Input actions
+        catchFishAction.Disable();
+        catchFishAction.performed -= OnCatchPerformed;
+        catchFishAction.canceled -= OnCatchCanceled;
+
+        ResetFishTween(); // Reset the fish tween
+    }
+
+    public void HideFishingUI()
+    {
+        DisableUI(); // Disable the UI and input actions
+        root.style.display = DisplayStyle.None; // Hide the fishing UI
+
+        // Reset all variables
+        isLifting = false;
+        velocity = 0.0f;
+        catchProgress = 0.0f;
+        playerBarY = 0.0f;
+        fishIconY = 0.0f;
+
+        // Reset the UI elements
+        playerBar.style.bottom = new StyleLength(playerBarY);
+        fishIcon.style.bottom = new StyleLength(fishIconY);
+        progressBar.style.height = Length.Percent(catchProgress * 100);
+        endingPopupLabel.text = string.Empty; // Clear the ending popup label
+
+        PlayerController.Instance.EnableGameplayActions(); // Enable gameplay actions
+    }
+
+    public void ShowFishingUI()
+    {
+        isActive = true; // Enable the Update loop
+        root.style.display = DisplayStyle.Flex; // Show the fishing UI
+
+        PlayerController.Instance.DisableGameplayActions(); // Disable gameplay actions
+        EnableFishingActions();
+
+        root.RegisterCallback<GeometryChangedEvent>(evt => AfterLayoutReady()); // Wait for layout to be ready
     }
 }

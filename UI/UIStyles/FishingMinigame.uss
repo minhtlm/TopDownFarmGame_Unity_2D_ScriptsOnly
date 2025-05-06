@@ -63,7 +63,7 @@
     background-color: rgb(202, 249, 255);
     border-radius: 8px;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
 }
 
 .fish-icon {
@@ -73,7 +73,7 @@
     position: absolute;
     height: 50px;
     width: 56px;
-    bottom: 0px;
+    bottom: 0;
 }
 
 .progress-bar {
@@ -83,7 +83,6 @@
     flex-direction: column;
     align-self: auto;
     border-radius: 5px;
-    height: 42px;
     width: 26px;
 }
 
@@ -91,4 +90,18 @@
     flex-grow: 1;
     background-color: rgb(251, 105, 73);
     border-radius: 2px;
+}
+
+.ending-popup {
+    position: absolute;
+    transform-origin: bottom;
+    top: 30%;
+    left: 60%;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    font-size: 20px;
+    color: rgb(208, 165, 42);
+    -unity-text-outline-width: 0.8px;
+    -unity-text-outline-color: rgb(103, 75, 60);
+    text-shadow: 2px 2px 3px rgb(0, 0, 0);
 }

@@ -6,13 +6,14 @@
             <ui:VisualElement name="RotateItem" class="rotate-item" />
         </ui:VisualElement>
         <ui:VisualElement name="FishingBar" class="fishing-bar">
-            <ui:VisualElement name="PlayerBar" class="player-bar"/>
+            <ui:VisualElement name="PlayerBar" class="player-bar" />
             <ui:VisualElement name="FishIcon" class="fish-icon" />
         </ui:VisualElement>
         <ui:VisualElement name="ProgressBarContainer" class="progress-bar-container">
             <ui:VisualElement name="ProgressBar" class="progress-bar">
-                <ui:VisualElement name="ProgressValue" class="progress-value"/>
+                <ui:VisualElement name="ProgressValue" class="progress-value" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:Label tabindex="-1" text="" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EndingPopup" class="ending-popup" />
     </ui:VisualElement>
 </ui:UXML>

@@ -11,16 +11,17 @@ public class PlayerController : MonoBehaviour
     private int selectedHotbarSlot = 0;
     private float speed = 5.0f;
     private bool isUsingTool = false;
+    private bool isFishing = false;
     private Rigidbody2D rigidbody2d;
     private Vector2 moveInput;
     private Vector2 lookDirection;
-    private Animator animator;
-    private TreeController tree;
     private IDestructible currentDestructible;
     private ItemDefinition currentItem = null;
     private PlayerInventory playerInventory;
     [SerializeField] private UIHandler_inventory inventoryManager;
     [SerializeField] private UIHandler_hotbar hotBarManager;
+    [SerializeField] private UIHandler_FishingMinigame fishingMinigame;
+    [SerializeField] private UIHandler_Popup popupUI;
 
     // Input actions
     [SerializeField] private InputAction moveAction;
@@ -29,9 +30,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputAction interactAction; // Key: E
     [SerializeField] private InputAction hotKeyAction; // Key: 1-9, 0, -, =
     [SerializeField] private InputAction escapeAction; // Key: esc
+    [SerializeField] private InputAction stopFishingAction; // Key: esc
 
     public Animator hairAnimator;
     public Animator toolAnimator;
+    private Animator animator;
+
 
 
     void Awake()
@@ -56,12 +60,19 @@ public class PlayerController : MonoBehaviour
         interactAction.Enable();
         hotKeyAction.Enable();
         escapeAction.Enable();
+        stopFishingAction.Enable();
 
         showingInventoryAction.performed += OnShowingInventoryPerformed;
         useToolAction.performed += (UseItem);
         interactAction.performed += (OnInteraction);
         hotKeyAction.performed += OnHotkeyPerformed;
         escapeAction.performed += (OnEscapePressed);
+        stopFishingAction.performed += (context) =>
+        {
+            isFishing = false;
+            Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
+            OnToolUseComplete();
+        };
     }
 
     void OnDisable()
@@ -71,6 +82,12 @@ public class PlayerController : MonoBehaviour
         interactAction.performed -= (OnInteraction);
         hotKeyAction.performed -= OnHotkeyPerformed;
         escapeAction.performed -= (OnEscapePressed);
+        stopFishingAction.performed -= (context) =>
+        {
+            isFishing = false;
+            Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
+            OnToolUseComplete();
+        };
 
         moveAction.Disable();
         showingInventoryAction.Disable();
@@ -78,6 +95,7 @@ public class PlayerController : MonoBehaviour
         interactAction.Disable();
         hotKeyAction.Disable();
         escapeAction.Disable();
+        stopFishingAction.Disable();
     }
 
     // Start is called before the first frame update
@@ -93,6 +111,14 @@ public class PlayerController : MonoBehaviour
         {
             hotBarManager = FindObjectOfType<UIHandler_hotbar>();
         }
+        if (fishingMinigame == null)
+        {
+            fishingMinigame = FindObjectOfType<UIHandler_FishingMinigame>();
+        }
+        if (popupUI == null)
+        {
+            popupUI = FindObjectOfType<UIHandler_Popup>();
+        }
 
         playerInventory = PlayerInventory.Instance;
         if (playerInventory == null)
@@ -100,6 +126,8 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("PlayerInventory not found");
             return;
         }
+
+        fishingMinigame.FishingFinished += OnFishingFinished; // Subscribe to the fishing finished event
     }
 
     // Update is called once per frame
@@ -122,26 +150,6 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 position = (Vector2)rigidbody2d.position + moveInput * speed * Time.deltaTime;
         rigidbody2d.MovePosition(position);
-    }
-
-    // Animation event
-    void OnToolUseComplete()
-    {
-        isUsingTool = false;
-        speed = 5.0f;
-    }
-
-    // Shake the tree by Animation event
-    void OnInteractAnimation()
-    {
-        if (currentDestructible != null && currentDestructible.CanInteract(currentItem.ItemName))
-        {
-            currentDestructible.OnInteractAnimation();
-        }
-        else
-        {
-            Debug.Log("No destructible object found: ");
-        }
     }
 
     // When the player interacts with an interactable object (key: E)
@@ -205,25 +213,62 @@ public class PlayerController : MonoBehaviour
         Set_Speed(new Animator[] { animator, hairAnimator, toolAnimator });
 
         // Set the tool animation
-        Set_Trigger(new Animator[] { animator, hairAnimator}, "axeTrigger");
-        Set_Trigger(new Animator[] { toolAnimator }, tool.AnimatorTrigger);
+        Set_Trigger(new Animator[] { animator, hairAnimator, toolAnimator }, tool.AnimatorTrigger);
+
+        // Disable all the gameplay actions
         isUsingTool = true;
+        DisableGameplayActions();
 
         // Check if the tool can interact with the target
         Collider2D hit = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f),
             new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask(tool.TargetLayer));
+
         if (hit != null)
         {
-            IDestructible destructible = hit.GetComponent<IDestructible>();
-            if (destructible != null )
+            if (tool.ItemName == "fishingrod")
             {
-                currentDestructible = destructible;
-                destructible.Interact(tool.ItemName);
+                Collider2D overLap = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f),
+                    new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask("Bridge"));
+
+                if (overLap == null)
+                {
+                    isFishing = true;
+                    StartCoroutine(FishingCoroutine());
+                }
+                else
+                {
+                    Debug.Log("Cannot fish here, no water");
+                }
+            }
+            else
+            {
+                IDestructible destructible = hit.GetComponent<IDestructible>();
+                if (destructible != null )
+                {
+                    currentDestructible = destructible;
+                    destructible.Interact(tool.ItemName);
+                }
             }
         } else
         {
             currentDestructible = null;
         }
+    }
+
+    IEnumerator FishingCoroutine()
+    {
+        // Waiting for the fish to bite
+        float waitTime = Random.Range(3.0f, 5.0f);
+        yield return new WaitForSeconds(waitTime);
+
+        popupUI.StopFishWaitingPopup(); // Stop and hide the fishing popup
+
+        popupUI.StartFishBitePopup(); // Show the fish bite popup
+        yield return new WaitForSeconds(popupUI.FishBitePopupDuration); // Wait for the popup to finish
+
+        Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 2); // Start the reeling animation
+
+        fishingMinigame.ShowFishingUI(); // Show the fishing UI
     }
 
     void OnShowingInventoryPerformed(InputAction.CallbackContext context)
@@ -289,6 +334,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnFishingFinished()
+    {
+        isFishing = false;
+        Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 3);
+        OnToolUseComplete(); // Call the tool use complete method to re-enable gameplay actions
+    }
+
     void Set_Look(Animator[] animators)
     {
         foreach (Animator animator in animators)
@@ -313,6 +365,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Set_Int(Animator[] animators, string intName, int value)
+    {
+        foreach (Animator animator in animators)
+        {
+            animator.SetInteger(intName, value);
+        }
+    }
+
     public void DisableGameplayActions()
     {
         moveAction.Disable();
@@ -329,5 +389,36 @@ public class PlayerController : MonoBehaviour
         useToolAction.Enable();
         interactAction.Enable();
         hotKeyAction.Enable();
+    }
+
+    
+    // Animation event below //
+
+    public void OnToolUseComplete()
+    {
+        isUsingTool = false;
+        EnableGameplayActions();
+    }
+
+    public void OnInteractAnimation()
+    {
+        if (currentDestructible != null && currentDestructible.CanInteract(currentItem.ItemName))
+        {
+            currentDestructible.OnInteractAnimation();
+        }
+    }
+
+    public void OnFinishCast()
+    {
+        if (isFishing)
+        {
+            Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 1);
+            popupUI.StartFishWaitingPopup(); // Show the fishing popup
+        }
+        else
+        {
+            OnToolUseComplete();
+            Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
+        }
     }
 }
