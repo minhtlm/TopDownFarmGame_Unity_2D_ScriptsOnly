@@ -29,7 +29,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="CurrencyContainer" class="currency-container">
             <ui:VisualElement name="GoldIcon" class="gold-icon" />
-            <ui:Label tabindex="-1" text="100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoneyLabel" class="money-label" />
+            <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoneyLabel" text="0" class="money-label" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

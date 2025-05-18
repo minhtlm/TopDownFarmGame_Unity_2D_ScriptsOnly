@@ -23,6 +23,7 @@ public class TreeController : MonoBehaviour, IDestructible
     [SerializeField] private GameObject woodPrefab;
     [SerializeField] private int woodDropFromTree = 8;
     [SerializeField] private int woodDropFromStump = 4;
+    [SerializeField] private AudioClip chopSound;
     
     void Awake()
     {
@@ -124,6 +125,8 @@ public class TreeController : MonoBehaviour, IDestructible
 
     public void ShakeTree()
     {
+        PlayerController.Instance.PlaySound(chopSound); // Play the chop sound
+
         if (!isCut)
         {
             if (treeTopTransform != null)

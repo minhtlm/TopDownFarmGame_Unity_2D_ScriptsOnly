@@ -29,6 +29,7 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     private const float gravity = -100.0f;
     private bool isLifting = false;
     private bool isActive = false;
+    public bool IsActive => isActive; // Property to check if the fishing UI is active
     private Tween fishTween;
     private Sequence shakeUISeq;
     
@@ -36,7 +37,9 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     [SerializeField] private float fishSpeed = 100.0f;
     [SerializeField] private float easyFishMovingPercent = 0.7f;
     [SerializeField] private float fishMovingMinDistance = 100.0f;
+    [SerializeField] private UIHandler_hotbar hotbarHandler;
     [SerializeField] private InputAction catchFishAction;
+    [SerializeField] private List<WeightedItem> fishList = new List<WeightedItem>();
 
     public event Action FishingFinished; // Event to notify when fishing is finished
 
@@ -226,6 +229,9 @@ public class UIHandler_FishingMinigame : MonoBehaviour
         {
             DisableUI(); // Disable the fishing UI
 
+            ItemDefinition randomFish = GetRandomFish();
+            PlayerInventory.Instance.AddItem(randomFish);
+
             endingPopupLabel.text = "Fish Caught!";
             ShakeUI();
         }
@@ -236,6 +242,31 @@ public class UIHandler_FishingMinigame : MonoBehaviour
             endingPopupLabel.text = "Fish Escaped!";
             ShakeUI();
         }
+    }
+
+    ItemDefinition GetRandomFish()
+    {
+        if (fishList.Count == 0) return null;
+
+        // Calculate the total weight of all fish
+        int totalWeight = 0;
+        foreach (var fish in fishList)
+        {
+            totalWeight += fish.Weight;
+        }
+
+        // Generate a random value based on the total weight
+        int randomValue = UnityEngine.Random.Range(0, totalWeight);
+        foreach (var fish in fishList)
+        {
+            if (randomValue < fish.Weight)
+            {
+                return fish;
+            }
+            randomValue -= fish.Weight;
+        }
+
+        return fishList[fishList.Count - 1]; // Should never reach here
     }
 
     void ResetFishTween()
@@ -285,6 +316,14 @@ public class UIHandler_FishingMinigame : MonoBehaviour
         endingPopupLabel.text = string.Empty; // Clear the ending popup label
 
         PlayerController.Instance.EnableGameplayActions(); // Enable gameplay actions
+        if (hotbarHandler != null)
+        {
+            hotbarHandler.Show(); // Show the hotbar
+        }
+        else
+        {
+            Debug.LogError("Hotbar handler not assigned");
+        }
     }
 
     public void ShowFishingUI()
@@ -294,6 +333,14 @@ public class UIHandler_FishingMinigame : MonoBehaviour
 
         PlayerController.Instance.DisableGameplayActions(); // Disable gameplay actions
         EnableFishingActions();
+        if (hotbarHandler != null)
+        {
+            hotbarHandler.Hide(); // Hide the hotbar
+        }
+        else
+        {
+            Debug.LogError("Hotbar handler not assigned");
+        }
 
         root.RegisterCallback<GeometryChangedEvent>(evt => AfterLayoutReady()); // Wait for layout to be ready
     }

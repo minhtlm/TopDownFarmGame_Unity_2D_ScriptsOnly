@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Consumable Item", menuName = "Data/Consumable Item")]
-public class ConsumableDefinition : ItemDefinition
+public class Consumable : ItemDefinition
 {
     [SerializeField] private int restoreAmount = 0;
     public int RestoreAmount => restoreAmount;

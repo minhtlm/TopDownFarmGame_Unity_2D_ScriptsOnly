@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Resource", menuName = "Data/Resource")]
-public class ResourceDefinition : ItemDefinition
+public class Resource : ItemDefinition
 {
     public override string GetAdditionalInfo()
     {

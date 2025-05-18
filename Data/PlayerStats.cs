@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    [SerializeField] private float health = 100f;
+    private float health = 100f;
     public float Health => health;
 
-    [SerializeField] private float hunger = 100f;
+    private float hunger = 100f;
     public float Hunger => hunger;
 
-    [SerializeField] private float thirst = 100f;
+    private float thirst = 100f;
     public float Thirst => thirst;
 
-    [SerializeField] private int money = 0;
+    private int money = 0;
     public int Money => money;
 
     [SerializeField] private float statsDecreaseInterval = 5f;
@@ -23,6 +23,9 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float healthIncreaseAmountFromThirst = 3f;
     [SerializeField] private float hungerDecreaseAmount = 3f;
     [SerializeField] private float thirstDecreaseAmount = 5f;
+    [SerializeField] private GameObject homeGrid;
+    [SerializeField] private GameObject bed;
+    [SerializeField] private UIHandler_FishingMinigame uiHandlerFishingMinigame;
 
     public event System.Action OnMoneyChanged; // Event to trigger when the money changes
     public event System.Action OnStatsChanged; // Event to trigger when the health, thirst or hunger changes
@@ -64,7 +67,7 @@ public class PlayerStats : MonoBehaviour
             {
                 health = Mathf.Max(health - healthDecreaseAmountFromHunger, 0f);
             }
-            else if (hunger > 50f)
+            else if (hunger > 30f)
             {
                 health = Mathf.Min(health + healthIncreaseAmountFromHunger, 100f);
             }
@@ -73,13 +76,51 @@ public class PlayerStats : MonoBehaviour
             {
                 health = Mathf.Max(health - healthDecreaseAmountFromThirst, 0f);
             }
-            else if (thirst > 50f)
+            else if (thirst > 30f)
             {
                 health = Mathf.Min(health + healthIncreaseAmountFromThirst, 100f);
             }
 
             OnStatsChanged?.Invoke(); // Trigger the event when stats change
+
+            float cameraHeight = Camera.main.orthographicSize * 2f;
+            float cameraWidth = cameraHeight * Camera.main.aspect;
+            Debug.Log($"Camera Size: {cameraHeight}, Width: {cameraWidth}");
         }
+
+        StartCoroutine(UIHandler_screenFader.Instance.FadeEndOfDay(
+            () => {
+                // Quit the fishing if the player is fishing
+                if (PlayerController.Instance.IsFishing)
+                {
+                    PlayerController.Instance.StopFishing();
+                }
+                if (uiHandlerFishingMinigame.IsActive)
+                {
+                    PlayerController.Instance.StopFishing();
+                    uiHandlerFishingMinigame.HideFishingUI();
+                }
+
+                // Set the next day to 6 AM
+                TimeManager.Instance.SetNextDayBySix();
+
+                // Activate the home grid and deactivate the current map
+                homeGrid.SetActive(true);
+                Collider2D collider = Physics2D.OverlapPoint(PlayerController.Instance.Rigidbody2D.position, LayerMask.GetMask("Confiner"));
+                if (collider != null)
+                {
+                    collider.transform.root.gameObject.SetActive(false);
+                }
+                else
+                {
+                    Debug.LogWarning("No map found at the player's position.");
+                }
+
+                // Teleport the player to the bed position
+                PlayerController.Instance.transform.position = bed.transform.position - new Vector3(0, 2f, 0);
+                VirtualCameraConfiner.Instance.SetConfiner2D(bed.transform.position);
+            }
+        ));
     }
 
     public void AddHealth(float amount)
@@ -131,5 +172,34 @@ public class PlayerStats : MonoBehaviour
     public bool CanAfford(int amount)
     {
         return money >= amount;
+    }
+
+    public void ResetStats()
+    {
+        AddHealth(50f);
+        AddHunger(50f);
+        AddThirst(50f);
+    }
+
+    public PlayerStatData ToSerializableData()
+    {
+        return new PlayerStatData
+        {
+            _health = health,
+            _hunger = hunger,
+            _thirst = thirst,
+            _money = money
+        };
+    }
+
+    public void LoadFromSerializableData(PlayerStatData data)
+    {
+        health = data._health;
+        hunger = data._hunger;
+        thirst = data._thirst;
+        money = data._money;
+
+        OnStatsChanged?.Invoke();
+        OnMoneyChanged?.Invoke();
     }
 }

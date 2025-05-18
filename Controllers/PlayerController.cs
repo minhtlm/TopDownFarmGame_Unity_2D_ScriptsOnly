@@ -8,35 +8,35 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
-    private int selectedHotbarSlot = 0;
     private float speed = 5.0f;
     private bool isUsingTool = false;
     private bool isFishing = false;
-    private Rigidbody2D rigidbody2d;
+    public bool IsFishing => isFishing;
     private Vector2 moveInput;
     private Vector2 lookDirection;
     private IDestructible currentDestructible;
     private ItemDefinition currentItem = null;
     private PlayerInventory playerInventory;
+    private AudioSource audioSource;
+    private Coroutine fishingCoroutine;
+
+    private Rigidbody2D rigidbody2d;
+    public Rigidbody2D Rigidbody2D => rigidbody2d;
+
     [SerializeField] private UIHandler_inventory inventoryManager;
     [SerializeField] private UIHandler_hotbar hotBarManager;
     [SerializeField] private UIHandler_FishingMinigame fishingMinigame;
     [SerializeField] private UIHandler_Popup popupUI;
+    [SerializeField] private Animator hairAnimator;
+    [SerializeField] private Animator toolAnimator;
+    [SerializeField] private Animator animator;
 
     // Input actions
     [SerializeField] private InputAction moveAction;
     [SerializeField] private InputAction showingInventoryAction; // Key: tab
     [SerializeField] private InputAction useToolAction; // Key: F
     [SerializeField] private InputAction interactAction; // Key: E
-    [SerializeField] private InputAction hotKeyAction; // Key: 1-9, 0, -, =
     [SerializeField] private InputAction escapeAction; // Key: esc
-    [SerializeField] private InputAction stopFishingAction; // Key: esc
-
-    public Animator hairAnimator;
-    public Animator toolAnimator;
-    private Animator animator;
-
-
 
     void Awake()
     {
@@ -50,6 +50,9 @@ public class PlayerController : MonoBehaviour
         }
         
         DontDestroyOnLoad(gameObject);
+
+        rigidbody2d = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void OnEnable()
@@ -58,21 +61,12 @@ public class PlayerController : MonoBehaviour
         showingInventoryAction.Enable();
         useToolAction.Enable();
         interactAction.Enable();
-        hotKeyAction.Enable();
         escapeAction.Enable();
-        stopFishingAction.Enable();
 
         showingInventoryAction.performed += OnShowingInventoryPerformed;
         useToolAction.performed += (UseItem);
         interactAction.performed += (OnInteraction);
-        hotKeyAction.performed += OnHotkeyPerformed;
         escapeAction.performed += (OnEscapePressed);
-        stopFishingAction.performed += (context) =>
-        {
-            isFishing = false;
-            Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
-            OnToolUseComplete();
-        };
     }
 
     void OnDisable()
@@ -80,29 +74,18 @@ public class PlayerController : MonoBehaviour
         showingInventoryAction.performed -= OnShowingInventoryPerformed;
         useToolAction.performed -= (UseItem);
         interactAction.performed -= (OnInteraction);
-        hotKeyAction.performed -= OnHotkeyPerformed;
         escapeAction.performed -= (OnEscapePressed);
-        stopFishingAction.performed -= (context) =>
-        {
-            isFishing = false;
-            Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
-            OnToolUseComplete();
-        };
 
         moveAction.Disable();
         showingInventoryAction.Disable();
         useToolAction.Disable();
         interactAction.Disable();
-        hotKeyAction.Disable();
         escapeAction.Disable();
-        stopFishingAction.Disable();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody2d = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
         if (inventoryManager == null)
         {
             inventoryManager = FindObjectOfType<UIHandler_inventory>();
@@ -118,6 +101,10 @@ public class PlayerController : MonoBehaviour
         if (popupUI == null)
         {
             popupUI = FindObjectOfType<UIHandler_Popup>();
+        }
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
         }
 
         playerInventory = PlayerInventory.Instance;
@@ -148,6 +135,22 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        Move();
+        if (moveInput != Vector2.zero)
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        } 
+        else
+        {
+            audioSource.Stop();
+        }
+    }
+
+    void Move()
+    {
         Vector2 position = (Vector2)rigidbody2d.position + moveInput * speed * Time.deltaTime;
         rigidbody2d.MovePosition(position);
     }
@@ -175,38 +178,35 @@ public class PlayerController : MonoBehaviour
     // When the player uses a tool (key: F)
     void UseItem(InputAction.CallbackContext context)
     { 
-        if (selectedHotbarSlot >= 0 && selectedHotbarSlot < playerInventory.GetItems().Count)
+        ItemStack item = hotBarManager.GetSelectedItem();
+        if (item == null)
         {
-            ItemStack item = playerInventory.GetItem(selectedHotbarSlot);
-            if (item == null)
-            {
-                Debug.Log("No item in the selected hotbar slot");
-                return;
-            }
-            else 
-            {
-                currentItem = item.itemDefinition;
-            }
+            Debug.Log("No item in the selected hotbar slot");
+            return;
+        }
+        else 
+        {
+            currentItem = item.itemDefinition;
+        }
 
-            if (currentItem is ToolDefinition tool)
+        if (currentItem is Tool tool)
+        {
+            UseTool(tool);
+        }
+        else if (currentItem is Consumable consumable)
+        {
+            if (consumable.UseItem())
             {
-                UseTool(tool);
+                playerInventory.RemoveItem(currentItem, 1);
             }
-            else if (currentItem is ConsumableDefinition consumable)
+            else
             {
-                if (consumable.UseItem())
-                {
-                    playerInventory.RemoveItem(currentItem, 1);
-                }
-                else
-                {
-                    Debug.Log("Cannot use consumable: " + consumable.ItemName);
-                }
+                Debug.Log("Cannot use consumable: " + consumable.ItemName);
             }
         }
     }
 
-    void UseTool(ToolDefinition tool)
+    void UseTool(Tool tool)
     {
         // Stop movement during tool use
         moveInput = Vector2.zero;
@@ -233,7 +233,7 @@ public class PlayerController : MonoBehaviour
                 if (overLap == null)
                 {
                     isFishing = true;
-                    StartCoroutine(FishingCoroutine());
+                    fishingCoroutine = StartCoroutine(FishingCoroutine());
                 }
                 else
                 {
@@ -261,7 +261,7 @@ public class PlayerController : MonoBehaviour
         float waitTime = Random.Range(3.0f, 5.0f);
         yield return new WaitForSeconds(waitTime);
 
-        popupUI.StopFishWaitingPopup(); // Stop and hide the fishing popup
+        popupUI.HidePopup(); // Stop and hide the fishing popup
 
         popupUI.StartFishBitePopup(); // Show the fish bite popup
         yield return new WaitForSeconds(popupUI.FishBitePopupDuration); // Wait for the popup to finish
@@ -269,6 +269,7 @@ public class PlayerController : MonoBehaviour
         Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 2); // Start the reeling animation
 
         fishingMinigame.ShowFishingUI(); // Show the fishing UI
+        isFishing = false; // Set the fishing state to false so that the player can't cancel the fishing minigame
     }
 
     void OnShowingInventoryPerformed(InputAction.CallbackContext context)
@@ -282,51 +283,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnHotkeyPerformed(InputAction.CallbackContext context)
-    {
-        string keyPressed = context.control.name;
-        int slotSelectedIndex = -1;
-
-        switch (keyPressed)
-        {
-            case "1": slotSelectedIndex = 0; break;
-            case "2": slotSelectedIndex = 1; break;
-            case "3": slotSelectedIndex = 2; break;
-            case "4": slotSelectedIndex = 3; break;
-            case "5": slotSelectedIndex = 4; break;
-            case "6": slotSelectedIndex = 5; break;
-            case "7": slotSelectedIndex = 6; break;
-            case "8": slotSelectedIndex = 7; break;
-            case "9": slotSelectedIndex = 8; break;
-            case "0": slotSelectedIndex = 9; break;
-            case "minus": slotSelectedIndex = 10; break;
-            case "equals": slotSelectedIndex = 11; break;
-            default: break;
-        }
-
-        if (slotSelectedIndex >= 0 && slotSelectedIndex < hotBarManager.hotBarSlots.Count)
-        {
-            selectedHotbarSlot = slotSelectedIndex;
-
-            // Set selected slot in the UI
-            if (hotBarManager != null)
-            {
-                hotBarManager.SetSelectedSlot(slotSelectedIndex);
-            }
-
-            ItemStack item = playerInventory.GetItem(slotSelectedIndex);
-            if (!playerInventory.IsEmptySlot(slotSelectedIndex))
-            {
-                Debug.Log("Selected item: " + item.itemDefinition.ItemName);
-            }
-        }
-    }
-
     void OnEscapePressed(InputAction.CallbackContext context)
     {
         if (IClosableUI.openingUI != null)
         {
             IClosableUI.openingUI.CloseUI();
+        }
+        else if (isFishing)
+        {
+            StopFishing();
         }
         else
         {
@@ -379,7 +344,6 @@ public class PlayerController : MonoBehaviour
         showingInventoryAction.Disable();
         useToolAction.Disable();
         interactAction.Disable();
-        hotKeyAction.Disable();
     }
 
     public void EnableGameplayActions()
@@ -388,11 +352,25 @@ public class PlayerController : MonoBehaviour
         showingInventoryAction.Enable();
         useToolAction.Enable();
         interactAction.Enable();
-        hotKeyAction.Enable();
+    }
+
+    public void StopFishing()
+    {
+        isFishing = false;
+        if (fishingCoroutine != null)
+        {
+            StopCoroutine(fishingCoroutine);
+            fishingCoroutine = null;
+        }
+        
+        popupUI.HidePopup(); // Stop and hide the fishing popup
+
+        Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
+        OnToolUseComplete();
     }
 
     
-    // Animation event below //
+    // ------Animation event below-------- //
 
     public void OnToolUseComplete()
     {
@@ -419,6 +397,36 @@ public class PlayerController : MonoBehaviour
         {
             OnToolUseComplete();
             Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 0);
+        }
+    }
+
+    // -------End of animation event-------- //
+
+    public PlayerData ToSerializableData()
+    {
+        return new PlayerData
+        {
+            _position = rigidbody2d.position,
+            _lookDirection = lookDirection
+        };
+    }
+
+    public void LoadFromSerializableData(PlayerData playerData)
+    {
+        rigidbody2d.position = playerData._position;
+        lookDirection = playerData._lookDirection;
+        Set_Look(new Animator[] { animator, hairAnimator, toolAnimator });
+    }
+
+    public void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogWarning("AudioSource or AudioClip is null");
         }
     }
 }

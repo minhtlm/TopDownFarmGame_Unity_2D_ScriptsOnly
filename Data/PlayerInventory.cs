@@ -18,7 +18,7 @@ public class ItemStack
 
 public class PlayerInventory : MonoBehaviour
 {
-    [SerializeField] private List<ItemStack> items = new List<ItemStack>();
+    private List<ItemStack> items = new List<ItemStack>();
     private int maxInventorySlots = 36;
     
     public event Action OnInventoryChanged; // Event to trigger when the inventory changes
@@ -53,7 +53,7 @@ public class PlayerInventory : MonoBehaviour
         return null; // Return null if index is out of range
     }
 
-    public bool AddItem(ItemDefinition itemToAdd, int amount)
+    public bool AddItem(ItemDefinition itemToAdd, int amount = 1)
     {
         if (itemToAdd == null) return false;
         int firstEmptySlot = -1;
@@ -68,7 +68,7 @@ public class PlayerInventory : MonoBehaviour
             }
 
             ItemStack item = items[i];
-            if (item.itemDefinition == itemToAdd)
+            if (item.itemDefinition == itemToAdd && item.quantity + amount < item.itemDefinition.MaxStackSize)
             {
                 item.quantity += amount;
                 OnInventoryChanged?.Invoke();
@@ -94,7 +94,7 @@ public class PlayerInventory : MonoBehaviour
         return false;
     }
 
-    public bool RemoveItem(ItemDefinition itemToRemove, int amount)
+    public bool RemoveItem(ItemDefinition itemToRemove, int amount = 1)
     {
         if (itemToRemove == null) return false;
 
@@ -107,9 +107,7 @@ public class PlayerInventory : MonoBehaviour
                 items[i].quantity -= amount;
                 if (items[i].quantity <= 0)
                 {
-                    // items.RemoveAt(i);
                     items[i] = null; // Remove the item from the inventory
-                    Debug.Log("Is null: " + (items[i]==null));
                 }
 
                 OnInventoryChanged?.Invoke();
@@ -120,7 +118,7 @@ public class PlayerInventory : MonoBehaviour
         return false;
     }
 
-    public bool HasItem(ItemDefinition itemToCheck, int minAmount)
+    public bool HasItem(ItemDefinition itemToCheck, int minAmount = 1)
     {
         if (itemToCheck == null) return false;
 
@@ -187,6 +185,42 @@ public class PlayerInventory : MonoBehaviour
             }
             playerItems[sourceIndex] = null;
             playerItems.Add(draggedItem);
+        }
+
+        OnInventoryChanged?.Invoke();
+    }
+
+    public List<ItemStackData> ToSerializableData()
+    {
+        List<ItemStackData> itemStackDataList = new List<ItemStackData>();
+
+        foreach (ItemStack itemStack in items)
+        {
+            if (itemStack != null && itemStack.itemDefinition != null)
+            {
+                ItemStackData itemStackData = new ItemStackData
+                {
+                    itemID = itemStack.itemDefinition.itemID,
+                    quantity = itemStack.quantity
+                };
+                itemStackDataList.Add(itemStackData);
+            }
+        }
+
+        return itemStackDataList;
+    }
+
+    public void LoadFromSerializableData(List<ItemStackData> itemStackDataList)
+    {
+        // Search for the item in the database and add it to the inventory
+        foreach (ItemStackData itemStackData in itemStackDataList)
+        {
+            ItemDefinition itemDefinition = ItemDatabase.Instance.GetItemById(itemStackData.itemID);
+            if (itemDefinition != null)
+            {
+                ItemStack itemStack = new ItemStack(itemDefinition, itemStackData.quantity);
+                items.Add(itemStack);
+            }
         }
 
         OnInventoryChanged?.Invoke();

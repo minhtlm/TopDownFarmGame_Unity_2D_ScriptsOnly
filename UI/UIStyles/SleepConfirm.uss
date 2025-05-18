@@ -1,0 +1,80 @@
+.container {
+    flex-grow: 0;
+    bottom: 40px;
+    position: absolute;
+    flex-wrap: nowrap;
+    align-self: center;
+    top: auto;
+    height: 240px;
+    width: 710px;
+    background-image: url("project://database/Assets/Sprites/UI/UIInventory/InventoryContainer_960x324.png?fileID=21300000&guid=c440654669156cf47bcb9b58d7de30c2&type=3#InventoryContainer_960x324");
+    -unity-background-scale-mode: stretch-to-fill;
+    padding-top: 30px;
+    padding-right: 40px;
+    padding-bottom: 30px;
+    padding-left: 40px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/PatrickHand-Regular.ttf?fileID=12800000&guid=0ece6bd8b210e834c9b368e777f58d98&type=3#PatrickHand-Regular");
+}
+
+.text-container {
+    flex-grow: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 20px;
+    margin-left: 0;
+}
+
+.button-container {
+    flex-grow: 0;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.yes-button {
+    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_220x60.png?fileID=21300000&guid=f37ab7e637647594098b1bdf4ccc8173&type=3#Button_220x60");
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(188, 188, 188, 0);
+    width: 220px;
+    margin-top: 0;
+    margin-right: 10px;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    height: 60px;
+    font-size: 32px;
+}
+
+.no-button {
+    background-image: url("project://database/Assets/Sprites/UI/UITradingPanel/Button_220x60.png?fileID=21300000&guid=f37ab7e637647594098b1bdf4ccc8173&type=3#Button_220x60");
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(188, 188, 188, 0);
+    width: 220px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 10px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    height: 60px;
+    font-size: 32px;
+}
+
+.label {
+    color: rgb(255, 255, 255);
+    font-size: 32px;
+}

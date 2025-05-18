@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class ItemDefinition : ScriptableObject
 {
-    private string id;
+    [SerializeField] private string id;
     public string itemID => id;
 
     [SerializeField] private string itemName;

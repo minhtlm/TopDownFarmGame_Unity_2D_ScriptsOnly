@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/SleepConfirm.uss?fileID=7433441132597879392&amp;guid=6a40078eed5c38b4ebfbc0e0c256ae2c&amp;type=3#SleepConfirm" />
+    <ui:VisualElement name="Container" class="container">
+        <ui:VisualElement name="TextContainer" class="text-container">
+            <ui:Label tabindex="-1" text="End the day and go to bed?" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="ButtonContainer" class="button-container">
+            <ui:Button text="Yes" parse-escape-sequences="true" display-tooltip-when-elided="true" name="YesButton" class="yes-button" />
+            <ui:Button text="No" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NoButton" class="no-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

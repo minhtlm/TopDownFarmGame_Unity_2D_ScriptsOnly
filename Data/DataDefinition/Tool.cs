@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Tool", menuName = "Data/Tool")]
-public class ToolDefinition : ItemDefinition
+public class Tool : ItemDefinition
 {
     [SerializeField] private string targetLayer = "";
     public string TargetLayer => targetLayer;

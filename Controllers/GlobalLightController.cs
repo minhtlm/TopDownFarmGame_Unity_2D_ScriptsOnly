@@ -24,9 +24,25 @@ public class GlobalLightController : MonoBehaviour
     private int duskHour = 17; // 5 pm - Dusk
     private int nightHour = 19; // 7 pm - Night
 
-    private float transitionDuration = 3f; // Duration for color transition
+    private const float transitionDuration = 3f; // Duration for color transition
     private Light2D globalLight;
     private LightPhase currentPhase = LightPhase.Night;
+
+    public static GlobalLightController Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -67,7 +83,7 @@ public class GlobalLightController : MonoBehaviour
         };
     }
 
-    public void UpdateLightByHour(int currentHour)
+    public void UpdateLightByHour(int currentHour, float duration = transitionDuration)
     {
         LightPhase newPhase = GetPhaseByHour(currentHour);
         if (newPhase != currentPhase)
@@ -75,7 +91,7 @@ public class GlobalLightController : MonoBehaviour
             currentPhase = newPhase;
             Color targetColor = GetColorForPhase(newPhase);
 
-            DOTween.To(() => globalLight.color, x => globalLight.color = x, targetColor, transitionDuration)
+            DOTween.To(() => globalLight.color, x => globalLight.color = x, targetColor, duration)
                 .SetEase(Ease.Linear); // Smooth transition to the new color
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class NPCController : MonoBehaviour, IInteractable
 {
     private GameObject expression;
-    [SerializeReference] private IClosableUI tradingPanelManager;
+    [SerializeReference] private IClosableUI ClosableUI;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +41,6 @@ public class NPCController : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
-        tradingPanelManager.ShowUI();
+        ClosableUI.ShowUI();
     }
 }

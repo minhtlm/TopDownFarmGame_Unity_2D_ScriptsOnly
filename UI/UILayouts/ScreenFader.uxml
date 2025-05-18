@@ -1,4 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Scripts/UI/UIStyles/ScreenFader.uss?fileID=7433441132597879392&amp;guid=a185598aa1cc38241b645a6e7f7adf2a&amp;type=3#ScreenFader" />
-    <ui:VisualElement name="ScreenFader" picking-mode="Ignore" class="fade-screen" />
+    <ui:VisualElement name="ScreenFader" class="fade-screen" style="flex-grow: 1; background-color: rgb(0, 0, 0);">
+        <ui:VisualElement name="Content" style="flex-grow: 1; color: rgb(255, 255, 255); font-size: 50px; -unity-font-definition: initial; -unity-font: url(&quot;project://database/Assets/Fonts/PatrickHand-Regular.ttf?fileID=12800000&amp;guid=0ece6bd8b210e834c9b368e777f58d98&amp;type=3#PatrickHand-Regular&quot;); position: absolute; align-self: center; top: 400px;">
+            <ui:Label tabindex="-1" text="Have a sweet dream!!!" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EndOfDayLabel" />
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
