@@ -13,7 +13,7 @@ public class tst : MonoBehaviour
         if (rb2d == null) return;
 
         // Tính toán vị trí hộp giống với OverlapBox
-        Vector2 boxCenter = rb2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f);
+        Vector2 boxCenter = rb2d.position + new Vector2(lookDirection.x * 1.5f, -1f);
 
         // Chọn màu (xanh lá) để dễ nhìn
         Gizmos.color = Color.green; 

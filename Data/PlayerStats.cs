@@ -82,10 +82,6 @@ public class PlayerStats : MonoBehaviour
             }
 
             OnStatsChanged?.Invoke(); // Trigger the event when stats change
-
-            float cameraHeight = Camera.main.orthographicSize * 2f;
-            float cameraWidth = cameraHeight * Camera.main.aspect;
-            Debug.Log($"Camera Size: {cameraHeight}, Width: {cameraWidth}");
         }
 
         StartCoroutine(UIHandler_screenFader.Instance.FadeEndOfDay(
@@ -179,6 +175,14 @@ public class PlayerStats : MonoBehaviour
         AddHealth(50f);
         AddHunger(50f);
         AddThirst(50f);
+    }
+
+    public void PlayerDied()
+    {
+        health = 0f;
+        hunger = 0f;
+        thirst = 0f;
+        OnStatsChanged?.Invoke();
     }
 
     public PlayerStatData ToSerializableData()

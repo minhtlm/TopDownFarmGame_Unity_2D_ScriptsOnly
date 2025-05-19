@@ -10,7 +10,6 @@ public class UIHandler_Popup : MonoBehaviour
     private Label popupLabel;
     private Coroutine fishWaitingCoroutine;
     private Sequence fishBiteSequence;
-    [SerializeField] private float offset = -100.0f;
 
     private float fishBitePopupDuration = 1.0f;
     public float FishBitePopupDuration => fishBitePopupDuration;

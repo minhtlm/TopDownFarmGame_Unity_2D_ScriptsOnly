@@ -7,6 +7,7 @@ public class TimeManager : MonoBehaviour
     public static TimeManager Instance { get; private set; }
 
     private GlobalLightController globalLightController;
+    private bool isAlive = true;
     [SerializeField] private float incrementInterval = 7f;
     [SerializeField] private int minuteIncrement = 10;
 
@@ -55,6 +56,13 @@ public class TimeManager : MonoBehaviour
             timer = 0f;
             IncreaseTimeByMinute(minuteIncrement);
         }
+
+        // Player dies if the time is 2:00 AM
+        if (hour == 2 && isAlive)
+        {
+            PlayerStats.Instance.PlayerDied();
+            isAlive = false;
+        }
     }
 
     private void IncreaseTimeByMinute(int minutes)
@@ -88,7 +96,7 @@ public class TimeManager : MonoBehaviour
         hour = (hour + 8) % 24;
         minute = 0;
 
-        globalLightController.UpdateLightByHour(hour);
+        globalLightController.UpdateLightByHour(hour, 0f);
     }
 
     public void SetNextDayBySix()
@@ -96,8 +104,9 @@ public class TimeManager : MonoBehaviour
         day++;
         hour = 6;
         minute = 0;
+        isAlive = true;
 
-        globalLightController.UpdateLightByHour(hour);
+        globalLightController.UpdateLightByHour(hour, 0f);
     }
 
     public TimeData ToSerializableData()

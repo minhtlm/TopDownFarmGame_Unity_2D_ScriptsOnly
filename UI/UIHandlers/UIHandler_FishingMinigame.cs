@@ -32,6 +32,7 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     public bool IsActive => isActive; // Property to check if the fishing UI is active
     private Tween fishTween;
     private Sequence shakeUISeq;
+    private ItemDefinition randomFish;
     
     [SerializeField] private float progressChangeSpeed = 0.1f;
     [SerializeField] private float fishSpeed = 100.0f;
@@ -229,7 +230,7 @@ public class UIHandler_FishingMinigame : MonoBehaviour
         {
             DisableUI(); // Disable the fishing UI
 
-            ItemDefinition randomFish = GetRandomFish();
+            // ItemDefinition randomFish = GetRandomFish();
             PlayerInventory.Instance.AddItem(randomFish);
 
             endingPopupLabel.text = "Fish Caught!";
@@ -329,6 +330,15 @@ public class UIHandler_FishingMinigame : MonoBehaviour
     public void ShowFishingUI()
     {
         isActive = true; // Enable the Update loop
+        randomFish = GetRandomFish(); // Get a random fish
+        if (randomFish != null)
+        {
+            fishIcon.style.backgroundImage = new StyleBackground(randomFish.ItemSprite.texture); // Set the fish icon
+        }
+        else
+        {
+            Debug.LogError("Random fish is null");
+        }
         root.style.display = DisplayStyle.Flex; // Show the fishing UI
 
         PlayerController.Instance.DisableGameplayActions(); // Disable gameplay actions

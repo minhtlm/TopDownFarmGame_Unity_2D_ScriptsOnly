@@ -227,7 +227,7 @@ public class PlayerController : MonoBehaviour
         {
             if (tool.ItemName == "fishingrod")
             {
-                Collider2D overLap = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.0f, 0.2f),
+                Collider2D overLap = Physics2D.OverlapBox(rigidbody2d.position + new Vector2(lookDirection.x * 1.5f, -1f),
                     new Vector2(1.0f, 0.8f), 0, LayerMask.GetMask("Bridge"));
 
                 if (overLap == null)

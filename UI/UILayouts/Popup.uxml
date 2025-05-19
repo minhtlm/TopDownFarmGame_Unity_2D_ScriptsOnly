@@ -1,4 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Scripts/UI/UIStyles/Popup.uss?fileID=7433441132597879392&amp;guid=1379e092de98a474f85506652f6879a8&amp;type=3#Popup" />
-    <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PopupLabel" text="testttttttttttttt" class="popup-label" style="width: auto; top: auto; left: auto; height: auto;" />
+    <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PopupLabel" class="popup-label" style="width: auto; top: auto; left: auto; height: auto;" />
 </ui:UXML>
