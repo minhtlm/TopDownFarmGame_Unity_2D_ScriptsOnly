@@ -193,11 +193,6 @@ public class UIHandler_tradingPanel : IClosableUI
                     itemsScrollView.Remove(element);
                 }
                 playerItems.Remove(item);
-
-                if (playerItemElements.Count <= 0)
-                {
-                    CreateEmptyInventoryLabel();
-                }
             }
             else if (playerItemElements.TryGetValue(itemId, out VisualElement playerItemElement))
             {
@@ -345,14 +340,6 @@ public class UIHandler_tradingPanel : IClosableUI
         }   
     }
 
-    void CreateEmptyInventoryLabel()
-    {
-        Label emptyInventoryLabel = new Label("Nothing to sell!");
-        emptyInventoryLabel.AddToClassList("empty-inventory-label");
-        itemsScrollView.Clear();
-        itemsScrollView.Add(emptyInventoryLabel);
-    }
-
     void RebuildTradingPanel()
     {
         CreateTotalPanel();
@@ -375,12 +362,6 @@ public class UIHandler_tradingPanel : IClosableUI
                 if (item == null || item.quantity <= 0) continue;
                 playerItems.Add(new ItemStack(item.itemDefinition, item.quantity));
             }
-        }
-
-        if (playerItems.Count <= 0)
-        {
-            CreateEmptyInventoryLabel();
-            return;
         }
 
         // Recreate the player items UI elements

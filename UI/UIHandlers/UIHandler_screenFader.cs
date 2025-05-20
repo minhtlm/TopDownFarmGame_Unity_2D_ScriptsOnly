@@ -91,7 +91,7 @@ public class UIHandler_screenFader : MonoBehaviour
         afterFadeAction.Invoke();
     }
 
-    public IEnumerator FadeEndOfDay(Action action = null)
+    public IEnumerator FadeEndOfDay(Action action = null, Action afterAction = null)
     {
         endOfDayLabel.text = new string("End of Day " + TimeManager.Instance.Day);
 
@@ -108,6 +108,8 @@ public class UIHandler_screenFader : MonoBehaviour
         // GlobalLightController.Instance.UpdateLightByHour(TimeManager.Instance.Hour);
 
         yield return new WaitForSeconds(3.0f);
+
+        afterAction?.Invoke();
 
         FadeOut();
     }

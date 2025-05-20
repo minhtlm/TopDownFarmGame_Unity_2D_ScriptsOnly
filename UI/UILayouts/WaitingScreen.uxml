@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/WaitingScreen.uss?fileID=7433441132597879392&amp;guid=cd1e8771589892c43815f015c8415ca0&amp;type=3#WaitingScreen" />
+    <ui:VisualElement name="Background" class="background">
+        <ui:Label tabindex="-1" text="&quot;If i firmly apply myself, i can make my life fun&quot;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Text" class="text" />
+    </ui:VisualElement>
+</ui:UXML>

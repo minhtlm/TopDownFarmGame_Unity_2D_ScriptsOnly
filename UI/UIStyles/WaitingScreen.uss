@@ -1,0 +1,16 @@
+.background {
+    flex-grow: 1;
+    background-color: rgb(0, 0, 0);
+}
+
+.text {
+    margin: 0;
+    padding: 0;
+    font-size: 60px;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/PatrickHand-Regular.ttf?fileID=12800000&guid=0ece6bd8b210e834c9b368e777f58d98&type=3#PatrickHand-Regular");
+    top: 400px;
+    position: absolute;
+    color: rgb(255, 255, 255);
+    align-self: center;
+}

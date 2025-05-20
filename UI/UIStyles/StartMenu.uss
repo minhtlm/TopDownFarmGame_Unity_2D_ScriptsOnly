@@ -1,0 +1,72 @@
+.background {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Sprites/UI/UIStartMenu/origbig.png?fileID=21300000&guid=8b0f62a78569c8e46a94e52a4537e0c3&type=3#origbig");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.container {
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    position: absolute;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: center;
+    top: 230px;
+    width: 500px;
+    height: 500px;
+    flex-wrap: wrap-reverse;
+    -unity-text-outline-width: 0.1px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    text-shadow: 5px 5px 3px rgba(0, 0, 0, 0.5);
+}
+
+.name-label {
+    height: 100px;
+    width: 500px;
+    margin-bottom: 20px;
+    color: rgb(255, 165, 0);
+    font-size: 80px;
+}
+
+.content-container {
+    flex-grow: 1;
+    width: 320px;
+    height: 400px;
+}
+
+.unity-button {
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.newgame-button {
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    background-image: url("project://database/Assets/Sprites/UI/UIStartMenu/ButtonStartMenu_320x60.png?fileID=21300000&guid=afa01e2313b9c034aae184ccd8bb4252&type=3#ButtonStartMenu_320x60");
+    -unity-background-scale-mode: scale-to-fit;
+    height: 60px;
+    width: 320px;
+    font-size: 50px;
+}
+
+.continue-button {
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    background-image: url("project://database/Assets/Sprites/UI/UIStartMenu/ButtonStartMenu_320x60.png?fileID=21300000&guid=afa01e2313b9c034aae184ccd8bb4252&type=3#ButtonStartMenu_320x60");
+    -unity-background-scale-mode: scale-to-fit;
+    height: 60px;
+    width: 320px;
+    font-size: 50px;
+}
+
+.exit-button {
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    background-image: url("project://database/Assets/Sprites/UI/UIStartMenu/ButtonStartMenu_320x60.png?fileID=21300000&guid=afa01e2313b9c034aae184ccd8bb4252&type=3#ButtonStartMenu_320x60");
+    -unity-background-scale-mode: scale-to-fit;
+    height: 60px;
+    width: 320px;
+    font-size: 50px;
+}

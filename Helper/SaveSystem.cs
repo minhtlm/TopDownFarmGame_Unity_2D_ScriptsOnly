@@ -24,15 +24,6 @@ public class SaveSystem : MonoBehaviour
         savePath = Application.persistentDataPath + "/save.json";
     }
 
-    void Start()
-    {
-        // Load game data when the game starts
-        LoadGame();
-        Vector2 playerPosition = PlayerController.Instance.Rigidbody2D.position;
-        ActivateInitialMap(playerPosition); // Activate the initial map
-        VirtualCameraConfiner.Instance.SetConfiner2D(playerPosition); // Set the confiner to the player's position
-    }
-
     void ActivateInitialMap(Vector2 position)
     {
         Collider2D collider = Physics2D.OverlapPoint(position, LayerMask.GetMask("Confiner"));
@@ -47,19 +38,6 @@ public class SaveSystem : MonoBehaviour
         if (activeMap == null)
         {
             Debug.LogWarning("No map found at the player's position.");
-        }
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SaveGame();
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            LoadGame();
         }
     }
 
@@ -80,15 +58,20 @@ public class SaveSystem : MonoBehaviour
         if (File.Exists(savePath))
         {
             string json = File.ReadAllText(savePath);
-            Debug.Log("Game loaded from " + savePath);
-            
+
             GameData gameData = JsonUtility.FromJson<GameData>(json);
             return gameData;
         }
         else
         {
-            Debug.LogWarning("Save file not found at " + savePath);
-            return null;
+            GameData gameData = new GameData();
+
+            gameData.inventory = PlayerInventory.Instance.InitializeInventory();
+            gameData.playerStats = PlayerStats.Instance.InitializeStats();
+            gameData.playerData = PlayerController.Instance.InitializePlayerData();
+            gameData.timeData = TimeManager.Instance.InitializeTime();
+
+            return gameData;
         }
     }
 
@@ -115,5 +98,9 @@ public class SaveSystem : MonoBehaviour
             PlayerController.Instance.LoadFromSerializableData(gameData.playerData);
             TimeManager.Instance.LoadFromSerializableData(gameData.timeData);
         }
+
+        Vector2 playerPosition = PlayerController.Instance.Rigidbody2D.position;
+        ActivateInitialMap(playerPosition); // Activate the initial map
+        VirtualCameraConfiner.Instance.SetConfiner2D(playerPosition); // Set the confiner to the player's position
     }
 }

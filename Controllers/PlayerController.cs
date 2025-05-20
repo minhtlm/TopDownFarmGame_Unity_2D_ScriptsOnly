@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     private float speed = 5.0f;
     private bool isUsingTool = false;
+    private bool isPlayingMinigame = false;
     private bool isFishing = false;
     public bool IsFishing => isFishing;
     private Vector2 moveInput;
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private UIHandler_hotbar hotBarManager;
     [SerializeField] private UIHandler_FishingMinigame fishingMinigame;
     [SerializeField] private UIHandler_Popup popupUI;
+    [SerializeField] private UIHandler_PauseMenu pauseMenuUI;
     [SerializeField] private Animator hairAnimator;
     [SerializeField] private Animator toolAnimator;
     [SerializeField] private Animator animator;
@@ -101,6 +103,10 @@ public class PlayerController : MonoBehaviour
         if (popupUI == null)
         {
             popupUI = FindObjectOfType<UIHandler_Popup>();
+        }
+        if (pauseMenuUI == null)
+        {
+            pauseMenuUI = FindObjectOfType<UIHandler_PauseMenu>();
         }
         if (animator == null)
         {
@@ -269,7 +275,7 @@ public class PlayerController : MonoBehaviour
         Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 2); // Start the reeling animation
 
         fishingMinigame.ShowFishingUI(); // Show the fishing UI
-        isFishing = false; // Set the fishing state to false so that the player can't cancel the fishing minigame
+        isPlayingMinigame = true; // Set it so that the player can't cancel the fishing minigame
     }
 
     void OnShowingInventoryPerformed(InputAction.CallbackContext context)
@@ -289,19 +295,20 @@ public class PlayerController : MonoBehaviour
         {
             IClosableUI.openingUI.CloseUI();
         }
-        else if (isFishing)
+        else if (isFishing && !isPlayingMinigame)
         {
             StopFishing();
         }
-        else
+        else if (!isFishing && !isPlayingMinigame && !isUsingTool)
         {
-            Debug.Log("Open Menu");
+            pauseMenuUI.ShowUI();
         }
     }
 
     void OnFishingFinished()
     {
         isFishing = false;
+        isPlayingMinigame = false;
         Set_Int(new Animator[] { animator, hairAnimator, toolAnimator }, "FishingState", 3);
         OnToolUseComplete(); // Call the tool use complete method to re-enable gameplay actions
     }
@@ -408,6 +415,15 @@ public class PlayerController : MonoBehaviour
         {
             _position = rigidbody2d.position,
             _lookDirection = lookDirection
+        };
+    }
+
+    public PlayerData InitializePlayerData()
+    {
+        return new PlayerData
+        {
+            _position = PlayerStats.Instance.GetHomePosition(),
+            _lookDirection = new Vector2(1, 0)
         };
     }
 

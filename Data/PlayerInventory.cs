@@ -18,6 +18,7 @@ public class ItemStack
 
 public class PlayerInventory : MonoBehaviour
 {
+    [SerializeField] private List<ItemStack> initialItems = new List<ItemStack>();
     private List<ItemStack> items = new List<ItemStack>();
     private int maxInventorySlots = 36;
     
@@ -195,6 +196,26 @@ public class PlayerInventory : MonoBehaviour
         List<ItemStackData> itemStackDataList = new List<ItemStackData>();
 
         foreach (ItemStack itemStack in items)
+        {
+            if (itemStack != null && itemStack.itemDefinition != null)
+            {
+                ItemStackData itemStackData = new ItemStackData
+                {
+                    itemID = itemStack.itemDefinition.itemID,
+                    quantity = itemStack.quantity
+                };
+                itemStackDataList.Add(itemStackData);
+            }
+        }
+
+        return itemStackDataList;
+    }
+
+    public List<ItemStackData> InitializeInventory()
+    {
+        List<ItemStackData> itemStackDataList = new List<ItemStackData>();
+
+        foreach (ItemStack itemStack in initialItems)
         {
             if (itemStack != null && itemStack.itemDefinition != null)
             {

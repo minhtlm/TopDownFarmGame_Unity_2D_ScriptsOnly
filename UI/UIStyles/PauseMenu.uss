@@ -1,0 +1,52 @@
+.background {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.container {
+    flex-grow: 1;
+    position: absolute;
+    align-self: center;
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/VT323-Regular.ttf?fileID=12800000&guid=a4940988bd91fe24e8fcf7f8af899bd5&type=3#VT323-Regular");
+    -unity-text-outline-width: 0.1px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    align-items: center;
+    top: 300px;
+}
+
+.text {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 20px;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    font-size: 80px;
+    color: rgb(255, 165, 0);
+    text-shadow: 5px 5px 3px rgba(0, 0, 0, 0.5);
+}
+
+.exit-button {
+    background-color: rgba(188, 188, 188, 0);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 20px;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    background-image: url("project://database/Assets/Sprites/UI/UIStartMenu/ButtonStartMenu_320x60.png?fileID=21300000&guid=afa01e2313b9c034aae184ccd8bb4252&type=3#ButtonStartMenu_320x60");
+    -unity-background-scale-mode: scale-to-fit;
+    height: 60px;
+    font-size: 50px;
+    width: 320px;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+}

@@ -16,6 +16,8 @@ public class PlayerStats : MonoBehaviour
     private int money = 0;
     public int Money => money;
 
+    private Coroutine statsDecreaseCoroutine;
+
     [SerializeField] private float statsDecreaseInterval = 5f;
     [SerializeField] private float healthDecreaseAmountFromHunger = 2f;
     [SerializeField] private float healthDecreaseAmountFromThirst = 3f;
@@ -48,7 +50,7 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(DecreaseStatsOverTime());
+        StartDecreaseStats();
     }
 
     IEnumerator DecreaseStatsOverTime()
@@ -105,7 +107,10 @@ public class PlayerStats : MonoBehaviour
                 Collider2D collider = Physics2D.OverlapPoint(PlayerController.Instance.Rigidbody2D.position, LayerMask.GetMask("Confiner"));
                 if (collider != null)
                 {
-                    collider.transform.root.gameObject.SetActive(false);
+                    if (collider.transform.root.gameObject != homeGrid)
+                    {
+                        collider.transform.root.gameObject.SetActive(false);
+                    }
                 }
                 else
                 {
@@ -113,10 +118,37 @@ public class PlayerStats : MonoBehaviour
                 }
 
                 // Teleport the player to the bed position
-                PlayerController.Instance.transform.position = bed.transform.position - new Vector3(0, 2f, 0);
+                PlayerController.Instance.transform.position = GetHomePosition();
                 VirtualCameraConfiner.Instance.SetConfiner2D(bed.transform.position);
+            },
+            () =>
+            {
+                StartDecreaseStats();
             }
         ));
+    }
+
+    public void StartDecreaseStats()
+    {
+        if (statsDecreaseCoroutine != null)
+        {
+            StopCoroutine(statsDecreaseCoroutine);
+        }
+        statsDecreaseCoroutine = StartCoroutine(DecreaseStatsOverTime());
+    }
+
+    public void StopDecreaseStats()
+    {
+        if (statsDecreaseCoroutine != null)
+        {
+            StopCoroutine(statsDecreaseCoroutine);
+            statsDecreaseCoroutine = null;
+        }
+    }
+
+    public Vector3 GetHomePosition()
+    {
+        return bed.transform.position - new Vector3(0, 2f, 0);
     }
 
     public void AddHealth(float amount)
@@ -194,6 +226,22 @@ public class PlayerStats : MonoBehaviour
             _thirst = thirst,
             _money = money
         };
+    }
+
+    public PlayerStatData InitializeStats()
+    {
+        PlayerStatData playerStatData = new PlayerStatData()
+        {
+            _health = 100f,
+            _hunger = 100f,
+            _thirst = 100f,
+            _money = 2000
+        };
+
+        OnStatsChanged?.Invoke();
+        OnMoneyChanged?.Invoke();
+
+        return playerStatData;
     }
 
     public void LoadFromSerializableData(PlayerStatData data)

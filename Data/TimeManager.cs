@@ -8,6 +8,7 @@ public class TimeManager : MonoBehaviour
 
     private GlobalLightController globalLightController;
     private bool isAlive = true;
+    private bool isActive = true;
     [SerializeField] private float incrementInterval = 7f;
     [SerializeField] private int minuteIncrement = 10;
 
@@ -42,12 +43,7 @@ public class TimeManager : MonoBehaviour
 
     private void Update()
     {
-        // Update the time of day scale
-        // timeofDay += Time.deltaTime / secondsPerDay;
-        // if (timeofDay >= 1f)
-        // {
-        //     timeofDay = 0f;
-        // }
+        if (!isActive) return; // If the game is paused, do not update the time
 
         // Update the timer and check if it's time to increment the minute
         timer += Time.deltaTime;
@@ -109,6 +105,16 @@ public class TimeManager : MonoBehaviour
         globalLightController.UpdateLightByHour(hour, 0f);
     }
 
+    public void StopTime()
+    {
+        isActive = false;
+    }
+
+    public void StartTime()
+    {
+        isActive = true;
+    }
+
     public TimeData ToSerializableData()
     {
         return new TimeData
@@ -116,6 +122,16 @@ public class TimeManager : MonoBehaviour
             _day = day,
             _hour = hour,
             _minute = minute
+        };
+    }
+
+    public TimeData InitializeTime()
+    {
+        return new TimeData
+        {
+            _day = 1,
+            _hour = 6,
+            _minute = 0
         };
     }
 

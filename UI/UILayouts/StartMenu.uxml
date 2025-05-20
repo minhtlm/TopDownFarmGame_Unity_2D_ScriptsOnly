@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/StartMenu.uss?fileID=7433441132597879392&amp;guid=a135997409475d8499326c6e1a2d77b1&amp;type=3#StartMenu" />
+    <ui:VisualElement name="Background" class="background">
+        <ui:VisualElement name="Container" class="container">
+            <ui:Label tabindex="-1" text="Spirited Valley" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NameLabel" class="name-label" />
+            <ui:VisualElement name="ContentContainer" class="content-container">
+                <ui:Button text="New Game" parse-escape-sequences="true" display-tooltip-when-elided="true" name="NewGameButton" class="newgame-button" />
+                <ui:Button text="Continue" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ContinueButton" class="continue-button" />
+                <ui:Button text="Exit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExitButton" class="exit-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

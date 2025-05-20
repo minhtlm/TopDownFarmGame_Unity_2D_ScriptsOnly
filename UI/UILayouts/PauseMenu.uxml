@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/UIStyles/PauseMenu.uss?fileID=7433441132597879392&amp;guid=9498619125f5a774d8a526b351afb2c4&amp;type=3#PauseMenu" />
+    <ui:VisualElement name="Background" class="background">
+        <ui:VisualElement name="Container" class="container">
+            <ui:Label tabindex="-1" text="Menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Text" class="text" />
+            <ui:Button text="Exit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExitButton" class="exit-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
